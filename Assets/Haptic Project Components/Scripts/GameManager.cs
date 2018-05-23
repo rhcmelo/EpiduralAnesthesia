@@ -47,20 +47,28 @@ public class GameManager : MonoBehaviour {
         //objPaciente.pesoMedio = 71.1f;
         objPaciente.idade = 29;
         //objPaciente.raioMedioCintura = 13.52809f;
-		//objPaciente.areaMediaCintura = 574.94f;
+        //objPaciente.areaMediaCintura = 574.94f;
 
-		PosicionarCamadas ();
+        InicializaJogo();
 
-		pontuacao = 0;
+    }
 
-		// Configurando objetivos
-		ConfigurarObjetivos();
+    private void InicializaJogo()
+    {
+        PosicionarCamadas();
 
-		// Carregando as propriedades dos tecidos
-		CarregarPropriedadesTecidos (codigoPerfilPropriedadesTecidos);
-	}
+        ZerarPontuacao();
 
-	public void ExibirObjetivo(int id)
+        // Configurando objetivos
+        ConfigurarObjetivos();
+
+        // Carregando as propriedades dos tecidos
+        CarregarPropriedadesTecidos(codigoPerfilPropriedadesTecidos);
+
+        HUDJogo.GetComponent<HUDCanvas>().goObjetivo.SetActive(false);
+    }
+
+    public void ExibirObjetivo(int id)
 	{
 		HUDJogo.GetComponent<HUDCanvas> ().ExibirObjetivo (id);
 	}
@@ -75,6 +83,12 @@ public class GameManager : MonoBehaviour {
         HUDJogo.GetComponent<HUDCanvas>().AtualizarObjetivo(objetivos[i].descricao, objetivos[i].pontos.ToString() + " pontos!");
 
         ExibirObjetivo(i);
+    }
+
+    private void ZerarPontuacao()
+    {
+        pontuacao = 0;
+        HUDJogo.GetComponent<HUDCanvas>().textoPontuacao.text = "Pontos: " + pontuacao;
     }
 
     public void AdicionarPontuacao(int valor)
@@ -125,11 +139,17 @@ public class GameManager : MonoBehaviour {
 
 		if (Input.GetKeyDown (KeyCode.Alpha3))
 			UsarSeringaPressao ();
-	}
 
-    // 17-6: escala ok, falta ajustar posicionamento em relação a camada da pele
-	// 24-6: posicionamento ok
-	void PosicionarCamadas()
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            // se não está perfurando pode reiniciar o jogo
+            if (PluginImport.GetPenetrationRatio() == 0)
+                InicializaJogo();
+        }
+
+        // 17-6: escala ok, falta ajustar posicionamento em relação a camada da pele
+        // 24-6: posicionamento ok
+        void PosicionarCamadas()
 	{
 		Tecido propriedadesTecido;
 
