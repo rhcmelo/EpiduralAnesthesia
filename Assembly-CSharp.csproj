@@ -10,7 +10,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace>
     </RootNamespace>
-    <ProjectGuid>{BB10A34C-CD80-3BCE-B540-E413706F7BBD}</ProjectGuid>
+    <ProjectGuid>{CFEDB4F0-EDDE-1DE5-568B-28E6F727306E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -72,7 +72,6 @@
     <Compile Include="Assets\Haptic Project Components\Scripts\Haptic Properties\HapticProperties.cs" />
     <Compile Include="Assets\Haptic Project Components\Scripts\HUD.cs" />
     <Compile Include="Assets\Haptic Project Components\Scripts\HUD2.cs" />
-    <Compile Include="Assets\Haptic Project Components\Scripts\HUDCamera.cs" />
     <Compile Include="Assets\Haptic Project Components\Scripts\HUDCanvas.cs" />
     <Compile Include="Assets\Haptic Project Components\Scripts\Layer.cs" />
     <Compile Include="Assets\Haptic Project Components\Scripts\Objetivo.cs" />
@@ -96,10 +95,10 @@
     <None Include="Assets\Haptic Project Components\Standard Assets\Skyboxes\_skybox info.txt" />
     <None Include="Assets\license.txt" />
     <Reference Include="UnityEditor.StandardEvents">
-      <HintPath>C:/Users/visual/Documents/Phantom12A-InterfaceG/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
+      <HintPath>D:/Rafael Melo/GitHub/EpiduralAnesthesia/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>
     <Reference Include="Unity.PackageManagerUI.Editor">
-      <HintPath>C:/Users/visual/Documents/Phantom12A-InterfaceG/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
+      <HintPath>D:/Rafael Melo/GitHub/EpiduralAnesthesia/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>

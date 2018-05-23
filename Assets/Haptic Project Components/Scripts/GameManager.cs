@@ -43,10 +43,11 @@ public class GameManager : MonoBehaviour {
 	void Start () {
 		objPaciente = new Paciente ();
 		objPaciente.peso = 71.1f;
-		objPaciente.pesoMedio = 71.1f;
-		objPaciente.idade = 29;
-        objPaciente.raioMedioCintura = 13.52809f;
-		objPaciente.areaMediaCintura = 574.94f;
+        objPaciente.altura = 1.60f; // rafael
+        //objPaciente.pesoMedio = 71.1f;
+        objPaciente.idade = 29;
+        //objPaciente.raioMedioCintura = 13.52809f;
+		//objPaciente.areaMediaCintura = 574.94f;
 
 		PosicionarCamadas ();
 
@@ -194,15 +195,21 @@ public class GameManager : MonoBehaviour {
 	// Parametricas
 	float DimensionarCamada(float espessuraMedia)
 	{
-		// esta bugado 4.71 vezes
-		//return espessuraMedia;
+        // esta bugado 4.71 vezes
+        //return espessuraMedia;
 
-		float espessuraCamada = Mathf.Pow (Mathf.Sqrt ((objPaciente.areaMediaCintura * (objPaciente.peso / objPaciente.pesoMedio)) / Mathf.PI)
-		                        / objPaciente.raioMedioCintura, 3) * espessuraMedia;
+        //float espessuraCamada = Mathf.Pow (Mathf.Sqrt ((objPaciente.areaMediaCintura * (objPaciente.peso / objPaciente.pesoMedio)) / Mathf.PI)
+        //                       / objPaciente.raioMedioCintura, 3) * espessuraMedia;
 
-		//Debug.Log (espessuraCamada);
+        const float So = 0.625f;
+        const float Bi = 1.1f;
+        const float Ai = 0.1f;
 
-		return espessuraCamada;
+        float espessuraCamada = So + (Bi * objPaciente.peso / Mathf.Pow(objPaciente.altura, 2) - Ai * objPaciente.idade) / espessuraMedia;
+
+        //Debug.Log (espessuraCamada);
+
+        return espessuraCamada;
 	}
 
 	void CarregarPropriedadesTecidos (int codigoPerfil)
