@@ -76,8 +76,11 @@ public class HapticInjection : HapticClassScript {
 	{
 		tempoUltimaTroca = 0.0f; // Troca de seringa
 
-		// gravação por profundidade
-		intervaloGravacao2 = 1.0f;
+        // rafael para não ultrapasar tamanho da seringa
+        maxPenetration = 0.6f;
+
+        // gravação por profundidade
+        intervaloGravacao2 = 1.0f;
 		profundidadeGravacao2 = -0.9f;
 
 		// Inicializando arquivos de registro
@@ -164,10 +167,12 @@ public class HapticInjection : HapticClassScript {
 		// Inserção / Retirada da Seringa
 		AtualizaSeringaPressao ();
 
-		/***************************************************************/
-		//Update Workspace as function of camera
-		/***************************************************************/
-		PluginImport.UpdateWorkspace(myHapticCamera.transform.rotation.eulerAngles.y);
+        AtualizaProfundidadePerfuracao();
+
+        /***************************************************************/
+        //Update Workspace as function of camera
+        /***************************************************************/
+        PluginImport.UpdateWorkspace(myHapticCamera.transform.rotation.eulerAngles.y);
 		
 		/***************************************************************/
 		//Update cube workspace
@@ -273,7 +278,7 @@ public class HapticInjection : HapticClassScript {
 				// Armazenar colisor do tecido atual penetrado
 				Collider colisorTecidoAtual = null;
 
-				for (int i = 0; i < hits.Length; i++) 
+                for (int i = 0; i < hits.Length; i++) 
 				{
 					RaycastHit hit = hits[i];
 
@@ -302,51 +307,52 @@ public class HapticInjection : HapticClassScript {
 				}
 
 				// Verificando tarefas de jogo envolvendo seringa de pressao
-				if (GameManager.instancia.seringaPressao && GameManager.instancia.emboloSeringaPressao) {
-				//if (cpHUD2.usandoSeringa && cpHUD2.apertandoEmbolo) {
-					for (int i = 0; i < GameManager.instancia.objetivos.Length; i++) {
+				if (GameManager.instancia.seringaPressao && GameManager.instancia.emboloSeringaPressao)
+                {
+                    //if (cpHUD2.usandoSeringa && cpHUD2.apertandoEmbolo) {
+                    bool bObjPlunger = false;
+                    bool bObjPlungerISL = false;
+                    //for (int i = 0; i < GameManager.instancia.objetivos.Length; i++) {
+                    for (int i = 7; i < GameManager.instancia.objetivos.Length; i++) // rafael
+                    {
 
-						// verificando se o objetivo pode ser pontuado
+                        // verificando se o objetivo pode ser pontuado
 
-						// seringa em qualquer tecido
-						if (!GameManager.instancia.objetivos [i].realizado && GameManager.instancia.objetivos [i].id == "Plunger") {
-							GameManager.instancia.objetivos [i].realizado = true;
-							// Atualizando a pontuação do jogo
-							GameManager.instancia.AdicionarPontuacao(GameManager.instancia.objetivos [i].pontos);
+                        // seringa em qualquer tecido
+                        if (!GameManager.instancia.objetivos [i].realizado)
+                        {
+                            if (GameManager.instancia.objetivos[i].id == "Plunger")
+                            {
+                                GameManager.instancia.AtualizarObjetivo(i);
+                                bObjPlunger = true;
+                            }
+                            // Seringa no ISL
+                            else if (GameManager.instancia.objetivos[i].id == "PlungerISL" && colisorTecidoAtual.name == "InterspinousLigament")
+                            {
+                                GameManager.instancia.AtualizarObjetivo(i);
+                                bObjPlungerISL = true;
+                            }
 
-							GameManager.instancia.AtualizarObjetivo(GameManager.instancia.objetivos [i].descricao,GameManager.instancia.objetivos [i].pontos.ToString() + " pontos!");
-							GameManager.instancia.ExibirObjetivo(i);
+                            if (bObjPlunger && bObjPlungerISL)
+                                break;
+                        }
 
-						}
-
-						// Seringa no ISL
-						if (!GameManager.instancia.objetivos [i].realizado && GameManager.instancia.objetivos [i].id == "PlungerISL" &&
-							colisorTecidoAtual.name == "InterspinousLigament") {
-							GameManager.instancia.objetivos [i].realizado = true;
-							// Atualizando a pontuação do jogo
-							GameManager.instancia.AdicionarPontuacao(GameManager.instancia.objetivos [i].pontos);
-
-							GameManager.instancia.AtualizarObjetivo(GameManager.instancia.objetivos [i].descricao,GameManager.instancia.objetivos [i].pontos.ToString() + " pontos!");
-							GameManager.instancia.ExibirObjetivo(i);
-						}
-					}
+                    }
 				}
 
 				// Verificando tarefas de jogo envolvendo seringa de anestesia
 				if (GameManager.instancia.seringaAnestesia && PluginImport.GetButton1State()) {
-					for (int i = 0; i < GameManager.instancia.objetivos.Length; i++) {
+                    for (int i = GameManager.instancia.objetivos.Length-1; i >= 0; i--)
+                    //for (int i = 0; i < GameManager.instancia.objetivos.Length; i++)
+                    {
+                        // verificando se o objetivo pode ser pontuado
 
-						// verificando se o objetivo pode ser pontuado
-
-						// seringa de anestesia em qualquer tecido
-						if (!GameManager.instancia.objetivos [i].realizado && GameManager.instancia.objetivos [i].id == "Anestesia") {
-							GameManager.instancia.objetivos [i].realizado = true;
-							// Atualizando a pontuação do jogo
-							GameManager.instancia.AdicionarPontuacao(GameManager.instancia.objetivos [i].pontos);
-							// Exibindo o objetivo concluído
-							GameManager.instancia.AtualizarObjetivo(GameManager.instancia.objetivos [i].descricao,GameManager.instancia.objetivos [i].pontos.ToString() + " pontos!");
-							GameManager.instancia.ExibirObjetivo(i);
-						}
+                        // seringa de anestesia em qualquer tecido
+                        if (!GameManager.instancia.objetivos [i].realizado && GameManager.instancia.objetivos [i].id == "Anestesia")
+                        {
+							GameManager.instancia.AtualizarObjetivo(i);
+                            break; // rafael
+                        }
 					}
 				}
 
@@ -356,20 +362,14 @@ public class HapticInjection : HapticClassScript {
 					cpHUD2.objectName = colisorTecidoAtual.name; // atualizando a camada
 					//Debug.Log(i + ":" + hits[i].collider.name + ":" + hits[i].distance + " > " + profundidade);
 
-					// Atualizando a pontuação
-					//GameManager.instancia.AdicionarPontuacao(100);
-
 					// Percorrendo os objetivos do jogo
 					if (GameManager.instancia.agulhaEpidural) {
-						for (int i = 0; i < GameManager.instancia.objetivos.Length; i++) {
-							// verificando se o objetivo pode ser pontuado
-							if (!GameManager.instancia.objetivos [i].realizado && GameManager.instancia.objetivos [i].id == colisorTecidoAtual.name) {
-								GameManager.instancia.objetivos [i].realizado = true;
-								// Atualizando a pontuação do jogo
-								GameManager.instancia.AdicionarPontuacao (GameManager.instancia.objetivos [i].pontos);
-
-								GameManager.instancia.AtualizarObjetivo(GameManager.instancia.objetivos [i].descricao,GameManager.instancia.objetivos [i].pontos.ToString() + " pontos!");
-								GameManager.instancia.ExibirObjetivo(i);
+                        for (int i = 0; i < GameManager.instancia.objetivos.Length; i++)
+                        {
+                            // verificando se o objetivo pode ser pontuado
+                            if (!GameManager.instancia.objetivos [i].realizado && GameManager.instancia.objetivos [i].id == colisorTecidoAtual.name) {
+								GameManager.instancia.AtualizarObjetivo(i);
+                                break; // rafael
 							}
 						}
 					}
@@ -589,11 +589,24 @@ public class HapticInjection : HapticClassScript {
 		if (PluginImport.GetButton2State () && tempoUltimaTroca > tempoTrocaSeringa) {
 			// Trocando seringa
 			tempoUltimaTroca = 0.0f;
-			//cpHUD2.usandoSeringa = !cpHUD2.usandoSeringa;
+            //cpHUD2.usandoSeringa = !cpHUD2.usandoSeringa;
 
-			GameManager.instancia.UsarSeringaPressao ();
+            bool bEstaPerfurando = false;
+            // se está perfurando não muda para a seringa
+            if (PluginImport.GetPenetrationRatio() > 0)
+                bEstaPerfurando = true;
 
-			/*
+            // código anterior
+            //GameManager.instancia.UsarSeringaPressao();
+            // rafael para alternar entre equipamentos com o segundo botão
+            if ((!bEstaPerfurando && GameManager.instancia.seringaAnestesia) || (bEstaPerfurando && GameManager.instancia.seringaPressao))
+                GameManager.instancia.UsarAgulhaEpidural();
+            else if (GameManager.instancia.agulhaEpidural && !GameManager.instancia.seringaPressao)
+                GameManager.instancia.UsarSeringaPressao ();
+            else
+                GameManager.instancia.UsarSeringaAnestesia();
+
+            /*
 			// Colocou a seringa na agulha tuohy
 			if (cpHUD2.usandoSeringa && !goSeringa.activeSelf) {
 				// Fazendo aparecer a seringa
@@ -604,7 +617,7 @@ public class HapticInjection : HapticClassScript {
 				goSeringa.SetActive (false);
 			}
 			*/
-		}
+        }
 
 		// Verificando se o botão 1 está sendo pressionado (dedão no embolo da seringa)
 		if (GameManager.instancia.seringaPressao && PluginImport.GetButton1State ()) {
@@ -618,8 +631,31 @@ public class HapticInjection : HapticClassScript {
 		}
 	}
 
-	// atualizado para calcular angulos a partir da comparação da direção da agulha com uma normal já existente (de um plano ou outro objeto)
-	void calcularAngulacaoAgulhaNormal(Vector3 normal, Vector3 ponto, out float angulo, out float anguloX, out float anguloY, out float anguloZ)
+    // rafael
+    void AtualizaProfundidadePerfuracao()
+    {
+        bool bMudouProfundidade = false;
+
+        // dependendo da ferramenta ativa deve-se mudar a profunidade máxima de perfuração
+        if (GameManager.instancia.seringaAnestesia)
+        {
+            if (maxPenetration != 0.6f)
+                bMudouProfundidade = true;
+            maxPenetration = 0.6f;
+        }
+        else
+        {
+            if (maxPenetration != 1.3f)
+                bMudouProfundidade = true;
+            maxPenetration = 1.3f;
+        }
+        if(bMudouProfundidade)
+            //Set the lenght of the syringue needle to penetrate inside the tissue            
+            PluginImport.SetMaximumPunctureLenght(maxPenetration);
+    }
+
+    // atualizado para calcular angulos a partir da comparação da direção da agulha com uma normal já existente (de um plano ou outro objeto)
+    void calcularAngulacaoAgulhaNormal(Vector3 normal, Vector3 ponto, out float angulo, out float anguloX, out float anguloY, out float anguloZ)
 	{
 		// linha da perfuração (preview) antes de perfurar
 		double[] direcaoProxy = new double[3];

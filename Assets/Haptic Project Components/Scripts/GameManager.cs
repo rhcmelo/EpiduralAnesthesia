@@ -45,7 +45,7 @@ public class GameManager : MonoBehaviour {
 		objPaciente.peso = 71.1f;
 		objPaciente.pesoMedio = 71.1f;
 		objPaciente.idade = 29;
-		objPaciente.raioMedioCintura = 13.52809f;
+        objPaciente.raioMedioCintura = 13.52809f;
 		objPaciente.areaMediaCintura = 574.94f;
 
 		PosicionarCamadas ();
@@ -64,12 +64,19 @@ public class GameManager : MonoBehaviour {
 		HUDJogo.GetComponent<HUDCanvas> ().ExibirObjetivo (id);
 	}
 
-	public void AtualizarObjetivo(string textoObjetivo, string textoPontuacao)
-	{
-		HUDJogo.GetComponent<HUDCanvas> ().AtualizarObjetivo (textoObjetivo, textoPontuacao);
-	}
+    public void AtualizarObjetivo(int i)
+    {
+        objetivos[i].realizado = true;
 
-	public void AdicionarPontuacao(int valor)
+        // Atualizando a pontuação do jogo
+        AdicionarPontuacao(objetivos[i].pontos);
+
+        HUDJogo.GetComponent<HUDCanvas>().AtualizarObjetivo(objetivos[i].descricao, objetivos[i].pontos.ToString() + " pontos!");
+
+        ExibirObjetivo(i);
+    }
+
+    public void AdicionarPontuacao(int valor)
 	{
 		pontuacao += valor;
 		HUDJogo.GetComponent<HUDCanvas> ().textoPontuacao.text = "Pontos: " + pontuacao;
@@ -307,10 +314,20 @@ public class GameManager : MonoBehaviour {
 
 	public void UsarSeringaAnestesia()
 	{
-		seringaAnestesia = !seringaAnestesia;
-		goSeringaAnestesia.SetActive (seringaAnestesia);
+        // rafael
+        // Obtendo o % de penetração
+        float profundidade = PluginImport.GetPenetrationRatio();
 
-		if (agulhaEpidural) { // Desativa agulha epidural se estava usando antes
+        // se está perfurando não muda para a seringa
+        if (profundidade > 0)
+            return;
+        ///
+
+        seringaAnestesia = true;
+        //seringaAnestesia = !seringaAnestesia;
+        goSeringaAnestesia.SetActive (seringaAnestesia);
+
+        if (agulhaEpidural) { // Desativa agulha epidural se estava usando antes
 			agulhaEpidural = !agulhaEpidural;
 			goAgulhaEpidural.SetActive (agulhaEpidural);
 		}
@@ -323,21 +340,53 @@ public class GameManager : MonoBehaviour {
 
 	public void UsarAgulhaEpidural()
 	{
-		agulhaEpidural = !agulhaEpidural;
-		goAgulhaEpidural.SetActive (agulhaEpidural);
+        // rafael
+        // Obtendo o % de penetração
+        float profundidade = PluginImport.GetPenetrationRatio();
 
-		if (seringaAnestesia) { // Desativa seringa anestesia se estava usando antes
+        // se está perfurando não muda da seringa
+        if (profundidade > 0 && seringaAnestesia)
+            return;
+        ///
+
+        agulhaEpidural = true;
+        //agulhaEpidural = !agulhaEpidural;
+        goAgulhaEpidural.SetActive (agulhaEpidural);
+
+        if (seringaAnestesia) { // Desativa seringa anestesia se estava usando antes
 			seringaAnestesia = !seringaAnestesia;
 			goSeringaAnestesia.SetActive (seringaAnestesia);
 		}
-	}
 
-	public void UsarSeringaPressao()
+        if (seringaPressao)
+        { // Desativa seringa pressao se estava usando antes
+            seringaPressao = !seringaPressao;
+            goSeringaPressao.SetActive(seringaPressao);
+        }
+
+    }
+
+    public void UsarSeringaPressao()
 	{
-		seringaPressao = !seringaPressao;
-		goSeringaPressao.SetActive (seringaPressao);
+        // rafael
+        // Obtendo o % de penetração
+        float profundidade = PluginImport.GetPenetrationRatio();
 
-		if (seringaAnestesia) { // Desativa seringa anestesia se estava usando antes
+        // se está perfurando não muda da seringa
+        if (profundidade > 0 && seringaAnestesia)
+            return;
+        ///
+
+        seringaPressao = !seringaPressao;
+        goSeringaPressao.SetActive (seringaPressao);
+
+        if (seringaPressao && !agulhaEpidural)
+        { // Ativa agulha epidural se não estava usando antes
+            agulhaEpidural = !agulhaEpidural;
+            goAgulhaEpidural.SetActive(agulhaEpidural);
+        }
+
+        if (seringaAnestesia) { // Desativa seringa anestesia se estava usando antes
 			seringaAnestesia = !seringaAnestesia;
 			goSeringaAnestesia.SetActive (seringaAnestesia);
 		}
