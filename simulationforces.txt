@@ -1,0 +1,87 @@
+Tissue  Force (N)  Depth (mm)
+Skin    6.4          0
+Fat     2.0          3
+Muscle  4.4          9
+ISL     7.5         13
+LF     12.1	    39
+ES      2.4 	    42
+DM      ?	    48
+BONE    8+	    60+?
+
+Tissue Properties
+Body (força em torno de 6 para perfurar)
+ST 0.8
+DP 0.45
+SF 0.02
+DF 0.03
+TS 0
+TD 0
+PT 0.51
+PS 0
+PD 0.8
+
+Fat (força em torno de 2 para perfurar?)
+ST 0.2
+DP 0.1
+SF 0.22
+DF 0.21
+TS 0
+TD 0
+PT 0.3
+PS 0.33
+PD 0.4
+
+Muscle (gera força em torno de 4.5 para perfurar)
+ST 0.8
+DP 0.25
+SF 0
+DF 0
+TS 0
+TD 0
+PT 0.38
+PS 0.5
+PD 0.96
+
+ISL (gera força em torno de 7.5 para ferfurar)
+ST 0.8
+DP 0.25
+SF 0
+DF 0
+TS 0
+TD 0
+PT 0.63
+PS 0.6
+PD 0.995
+
+LF (gera força em torno de 11 para perfurar?)
+ST 0.977
+DP 0.71
+SF 0
+DF 0
+TS 0
+TD 0
+PT 0.9
+PS 0.9
+PD 0.997
+
+ES (força de 2.4 para perfurar?)
+ST 0.2
+DP 0.1
+SF 0.22
+DF 0.21
+TS 0
+TD 0
+PT 0.36
+PS 0.4
+PD 0.4
+
+DM
+ST 0.2
+DP 0.1
+SF 0.22
+DF 0.21
+TS 0
+TD 0
+PT 0.2
+PS 0.4
+PD 0.4

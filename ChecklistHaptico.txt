@@ -1,0 +1,201 @@
+ajustar rigidez da coluna (impassável) como tecido bone
+ajustar dimensao dos tecidos internos baseando na figura (dura-mater para dentro da coluna?)
+colocar gameplay validando angulação da agulha na inserção
+criar cena de seleção de tecido para atualização individual de atributos dos tecidos, com gravação em arquivo/recuperação
+verificar local de anestesia/tecido na tarefa de anestesia local
+
+log 23/9: - organização de material para escrever paper
+	  - mapeamento da funcionalidade traceback (versão 8i) = prototipo 18
+	  - mapeamento da funcionalidade interface (versão 9) = prototipo 19
+	  - mapeamento da funcionalidade gamification (parcial) (versão 9) = prototipo 19
+
+(ok: 9/9) exibir os game objectives
+
+(ok: 9/9 - parcial) troca de instrumentos e anestesia local
+		    ainda não verifica local de anestesia ou tecido
+
+
+(ok: 9/9) assistir video de epidural - https://www.youtube.com/watch?v=qXbTEIV3t1o
+	etapas: locate L4-L5 vertebra
+		local anesthesia
+	        epidural needle insertion (onway)
+		pressure measuring - LOR (onway)
+		catether insertion
+		needle removal
+		catether fixation
+
+log 9/9: - assisti video de epidural
+	 - achei modelos de seringa:
+	 free (800 poly): http://www.turbosquid.com/3d-models/free-ma-model-syringe/527991
+	 free (7k poly): http://www.turbosquid.com/3d-models/syringe-c4d-free/505091
+	 pago $2.5 (3.8k poly): http://www.turbosquid.com/3d-models/syringe-3d-model/936047
+	 - colocação de seringa no lugar do placeholder 
+	   position (x: -0.16, y: -0.84, z -7.75 / -13.92)
+	   rotation (x:316, y:323, z:0)
+	   scale 1
+
+	 - pesquisa sobre colocação da anestesia local:
+	Chapter 37 - Epidural and Spinal Anesthesia - Christopher M. Bernards
+	http://ether.stanford.edu/Ortho/3%20-%20Spinal%20and%20epidural.html
+
+	Requisitos da anestesia local (local anesthetic skin wheal):
+	- proximo da posicao onde vai ser inserida a agulha epidural
+	- no tecido subcutaneo? (https://www.researchgate.net/figure/266627401_fig5_Step-1-Initial-deep-injection-of-local-anesthetic-1-lidocaine-with-1100000)
+	- 1 a 2 polegadas (http://ether.stanford.edu/Ortho/3%20-%20Spinal%20and%20epidural.html)
+
+	- Inserção da agulha:
+	cephalad angulation (10-15 graus)
+	é importante visualizar mentalmente o modelo 3D da anatomia espinhal 
+	(http://ether.stanford.edu/Ortho/3%20-%20Spinal%20and%20epidural.html, p. 928 - keypoints)
+
+	- cephalad angulation é angulação cefálica - vertical para cima (em Y)
+	http://www.scielo.br/pdf/rba/v61n6/en_v61n6a08.pdf
+
+	- troca de instrumentos e anestesia local
+	- modelos 3D de mãos e corpo http://www.cadnav.com/3d-models/model-21978.html
+	- mao low poly? http://forum.unity3d.com/threads/fps-hand-3d-model-low-poly.335445/
+
+(ok 19/8: parcial - testbed) atualizar parametros dos tecidos (damping, static friction, stiffness, ...) na troca de tecidos (atualiza normalmente, mas esta bugando porque os tecidos estão muito proximos - ver log 18/8)
+
+(ok: 2/9 - parcial) criar interface para atualização individual de atributos dos tecidos, com gravação em arquivo/recuperação
+	 - atualiza e grava arquivo no procedimento de inserção, conforme tecido tocado pela agulha
+	 - le arquivo quando inicia simulação
+
+ok 4/8: feedback das forças visual (números)
+
+(ok: 4/8) verificar no prototipo a angulação permitida para inserção da agulha (midline x paramedian 10a 25 graus) e dar feedback
+
+
+log (2/9): - feedback do andamento para Aura (telefone e email)
+	   - registro das propriedades dos tecidos ajustadas (excel)
+	   - registro das propriedades dos tecidos wm arquivo texto: PropriedadesTecidos.txt
+
+
+log (19/8) - acrescentados efeitos de força constante e viscosidade para os tecidos
+	   - testes exaustivos para determinar atributos dos tecidos para tentar equalizar com forças de holton
+	   - determinação de atributos dos tecidos individualmente, principalmente pelo uso do atributo pop-through (resistencia a perfuracao): simulationforces.txt
+	   - teste com todos os tecidos juntos, e ajuste para compor um grupo proprio para testes com haptico (LayerTestBed)
+	   - adição do efeito de viscosidade para os tecidos ISL (0.4 e 0.6) e LF (50 e 10)
+	   - geração de diversos logs normal/profundidade (Test, TestLayers)
+	   
+
+log (18/8) - ao tentar gerar profiles de forças, detectou-se um
+             problema na atualização dos parametros na troca de tecidos, 
+             o plugin so considera os parametros do primeiro tecido perfurado
+	     - ao investigar mais e testar com prototipo original do plugin, 
+               verificou-se que ha troca de tecido somente quando eh detectada colisao com a superficie deste,
+		ou seja, tecidos muito próximos não provocam colisão e não atualizam parametros
+		provavelmente sera necessario reavaliar as distancias entre os tecidos para fazer funcionar
+		parametros do arm bone sao bons para testes
+	     - criação do LayersInvertido (muscle/fat) para testar
+	     - criação de métodos para atualizar forças hapticas com base no nome do objeto ou id do objeto tocado, obtendo suas propriedades
+	     - verificação de melhores forças para cada tecido / profundidade (simulationforces.txt)
+	     bons parametros tecido principal: stiffness=0.92, puncturethrough=0.05, damping=0, outros=1
+ 	     - geração de log de forçasxprofundidade (1808) ST,SF,DF,PF,PS=1 PT=0.05, outros 0
+
+log (8/8) detalhamento do prototipo versao 17 com figuras, reorganizacao da estrutura da tese 
+          colocando features dos prototipos 16 e 17 no item 6.1.1.
+	falta
+	- Detalhar prototipos restantes
+	- Organizar as features de cada versao do prototipo como partes do item 6.1.1
+	- Reorganizar a tese de acordo com a estrutura do paper ENTCOM 
+
+
+log (4/8): implementação do cálculo da angulação da agulha em relação a 
+           superfície, utilizando Raycast para obter a normal da superficie e 
+           Vector3.Angle para calcular o angulo da direção da agulha em 
+           relação a normal (geral, horizontal x, vertical y e profundidade z).
+	   no modo cena (scene) é possível visualizar as linhas:
+	   direção - amarela, normal - vermelha, ciano - angulacao x e 
+           magenta - angulacao y
+
+	   implementação do cálculo da angulação da agulha em relação a uma
+	   normal obtida de uma malha de objeto (plano/cubo) para não
+	   cair no problema da superficie deformada, trazendo angulação 
+           estranha/incompatível - falta corrigir/retirar angulação Z
+	   (valores estranhos: acho que porque ponto da normal não está 
+            alinhado com direção/ponto da perfuração)
+
+	   feedback visual da angulação da agulha em graus (vertical, 
+           horizontal, geral)
+
+log (3/8): Documentando implementações:
+- Feitos: Protótipos 15 (leitura e exibição das forças) e 16 (pressão salina e seringa)
+Falta documentar:
+- Prototipo 17: posicionamento dinâmico das camadas dos tecidos (versao 8HC) thickness e 8JB - problema do pivo da geração dos tecidos ser central
+- Protótipo 18: Traceback 8I (exibição dos movimentos realizados gravados)
+- Protótipo 19: Interface - exibição de botoes, pontuação e implementação de conquistas
+- Protótipo 20: Registro de dados por penetração (needle depth), problema da inclinação não definida, 
+                valores de tecidos na profundidade errada, tentando mapear relaçao força x 
+                (damping, stiffness e static and dynamic friction) para comparar e ajustar 
+                com experimento do Holton
+- Protótipo 21: mapeamento da inclinação da agulha (a implementar)
+
+(ok: 17/6) dimensionar tecidos thickness conforme tabela 2
+escala do paciente baseada em parametro de cintura (waist radius)
+(24/6 ajustado, 17/6 falta ajustar, escala 0.02 esta afastada da pele) posicionar tecidos conforme
+(ok: 24/6) movimento e rotação da agulha conforme sequencia gravada
+
+log (28/7): 9BRegistro - já gravando informações dos tecidos e hápticas no log por profundidade
+            para gerar estatísticas e testar/comparar
+	    comparando log de forças - ver arquivo forcas.txt na solucao
+
+log (27/7): InterfaceA5 - já gravando informações dos tecidos e hápticas no log para gerar estatísticas e testar/comparar
+	    comparando log de forças - ver arquivo forcas.txt na solucao
+
+log (22/7): implementação da pontuação e objetivos do jogo
+	    verificação de propriedades dos tecidos (stiffness, damping, static friction, dynamic friction) e sua correlação com forças exercidas (não identificado no material do plugin ou api). 
+            Início de busca nos papers médicos.
+	    ajuste na interface com botoes de exibição das propriedades e detalhes
+	    <descoberta> parametrização não funciona porque pivo do tecido eh central, proporção de aumento deveria ser diferenciada (reduzida) para a lombar
+	    <pesquisa> mri lumbar thickness (na esperança de encontrar dimensoes dos tecidos para normal/parturiente) - só achei do Ligamento Flavum
+
+log (30/6): versao 8JB - correção de bugs na replicação dos waypoints, na criação de arquivos de leitura, fotocopia do capitulo da espinha do livro anatomia, testes com trigger
+
+log (24/6)
+ok ajustes no posicionamento das camadas dos tecidos (versao 8HC)
+
+log (17/6) (versao 8H)
+mapear a correspondencia entre forças exercidas com base nas propriedades (stiffness, damping, ...) e as forças listadas nos trabalhos 
++ leitura, gravação e documentação das forças. Efeitos customizaveis (HL_EFFECT_COMPUTE_FORCE) prog. guide 7-36 a 7-38, 
+Force efect parameters em api reference (B-17)
+<descoberta>:: para configurar efeitos no plugin - GenericFunctionClass script (PluginEffect.SetEffect, PluginEffect.StartEffect)
+<descoberta>:: efeitos ambiente (forca constante, viscosidade) funcionam em conjunto com perfuração
+<descoberta>:: viscosidade não tao util pois ha limitacao de movimentacao apos perfuracao
+
+(ok: 10/6) correção do bug de obter propriedades dos tecidos errados
+(falta ajustar: 10/6) calculo e ajuste do valor de profundidade de penetração (depende do tissue thickness)
+
+(ok: 3/6) calculo de forças hapticas e exibição 
+(ok: 3/6) armazenamento das forças hapticas realizadas (log)
+(ok: 10/6) troca da agulha pela seringa para medir pressao
+(ok: 10/6) propriedades de pressão em cada tecido (kPa parturiente no LF e ES, os demais kPa porco, e chute para pele e musculo)
+
+ajuste das forças exercidas (evolução), conforme o aumento da profundidade da penetração da agulha 
+ajuste direto de forças exercidas nos tecidos, ao invés das propriedades dos tecidos
+calculo das forças de deflexão da agulha
+calcular angulação da agulha?
+
+(pesquisar paralelo 22/7) propriedades dos tecidos lumbares envolvidos (stiffness, damping, static friction, dynamic friction) para comparar ou calibrar o haptico 
+- Biomechanical properties of human lumbar spine ligaments (J Biomech. 1992 Nov;25(11):1351-6.)
+
+calculo das forças Holton
+Comparação da força Holton com força exercida no haptico
+
+troca da seringa pelo cateter para inserir o cateter e aplicar a anestesia
+
+checklist na tela de camadas alcançadas, com textura/nome da camada
+animação troca agulha/seringa
+barras de medição para os parâmetros
+som para troca de agulha/seringa
+seleção de (3) corpos, que podem estar associados a niveis de dificuldade
+input do nome do médico para gravação junto com o log dos movimentos
+
+colocação de menus
+troca de GUI displays para canvas
+(parcial: 22/7) colocação de elementos de pontuação/feedback (foram colocadas pontuações e armazenados objetivos. Falta exibir objetivos na tela).
+incluir feedback gráfico da pressão salina (barra)
+tela de visualização/ajustes das propriedades dos tecidos
+plotagem das curvas de forças
+
+movimentação do corpo da paciente

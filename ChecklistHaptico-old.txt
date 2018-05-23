@@ -1,0 +1,72 @@
+ajustar rigidez da coluna (impassável) como tecido bone
+verificar no prototipo a angulação permitida para inserção da agulha (midline x paramedian 10a 25 graus) e dar feedback
+assistir video de epidural
+
+(ok: 17/6) dimensionar tecidos thickness conforme tabela 2
+escala do paciente baseada em parametro de cintura (waist radius)
+(24/6 ajustado, 17/6 falta ajustar, escala 0.02 esta afastada da pele) posicionar tecidos conforme
+(ok: 24/6) movimento e rotação da agulha conforme sequencia gravada
+
+log (28/7): 9BRegistro - já gravando informações dos tecidos e hápticas no log por profundidade
+            para gerar estatísticas e testar/comparar
+	    comparando log de forças - ver arquivo forcas.txt na solucao
+
+log (27/7): InterfaceA5 - já gravando informações dos tecidos e hápticas no log para gerar estatísticas e testar/comparar
+	    comparando log de forças - ver arquivo forcas.txt na solucao
+
+log (22/7): implementação da pontuação e objetivos do jogo
+	    verificação de propriedades dos tecidos (stiffness, damping, static friction, dynamic friction) e sua correlação com forças exercidas (não identificado no material do plugin ou api). 
+            Início de busca nos papers médicos.
+	    ajuste na interface com botoes de exibição das propriedades e detalhes
+	    <descoberta> parametrização não funciona porque pivo do tecido eh central, proporção de aumento deveria ser diferenciada (reduzida) para a lombar
+	    <pesquisa> mri lumbar thickness (na esperança de encontrar dimensoes dos tecidos para normal/parturiente) - só achei do Ligamento Flavum
+
+log (30/6): versao 8JB - correção de bugs na replicação dos waypoints, na criação de arquivos de leitura, fotocopia do capitulo da espinha do livro anatomia, testes com trigger
+
+log (24/6)
+ok ajustes no posicionamento das camadas dos tecidos (versao 8HC)
+
+log (17/6) (versao 8H)
+mapear a correspondencia entre forças exercidas com base nas propriedades (stiffness, damping, ...) e as forças listadas nos trabalhos 
++ leitura, gravação e documentação das forças. Efeitos customizaveis (HL_EFFECT_COMPUTE_FORCE) prog. guide 7-36 a 7-38, 
+Force efect parameters em api reference (B-17)
+<descoberta>:: para configurar efeitos no plugin - GenericFunctionClass script (PluginEffect.SetEffect, PluginEffect.StartEffect)
+<descoberta>:: efeitos ambiente (forca constante, viscosidade) funcionam em conjunto com perfuração
+<descoberta>:: viscosidade não tao util pois ha limitacao de movimentacao apos perfuracao
+
+(ok: 10/6) correção do bug de obter propriedades dos tecidos errados
+(falta ajustar: 10/6) calculo e ajuste do valor de profundidade de penetração (depende do tissue thickness)
+
+(ok: 3/6) calculo de forças hapticas e exibição 
+(ok: 3/6) armazenamento das forças hapticas realizadas (log)
+(ok: 10/6) troca da agulha pela seringa para medir pressao
+(ok: 10/6) propriedades de pressão em cada tecido (kPa parturiente no LF e ES, os demais kPa porco, e chute para pele e musculo)
+
+ajuste das forças exercidas (evolução), conforme o aumento da profundidade da penetração da agulha 
+ajuste direto de forças exercidas nos tecidos, ao invés das propriedades dos tecidos
+calculo das forças de deflexão da agulha
+calcular angulação da agulha?
+
+(pesquisar paralelo 22/7) propriedades dos tecidos lumbares envolvidos (stiffness, damping, static friction, dynamic friction) para comparar ou calibrar o haptico 
+- Biomechanical properties of human lumbar spine ligaments (J Biomech. 1992 Nov;25(11):1351-6.)
+
+calculo das forças Holton
+Comparação da força Holton com força exercida no haptico
+
+troca da seringa pelo cateter para inserir o cateter e aplicar a anestesia
+
+checklist na tela de camadas alcançadas, com textura/nome da camada
+animação troca agulha/seringa
+barras de medição para os parâmetros
+som para troca de agulha/seringa
+seleção de (3) corpos, que podem estar associados a niveis de dificuldade
+input do nome do médico para gravação junto com o log dos movimentos
+
+colocação de menus
+troca de GUI displays para canvas
+(parcial: 22/7) colocação de elementos de pontuação/feedback (foram colocadas pontuações e armazenados objetivos. Falta exibir objetivos na tela).
+incluir feedback gráfico da pressão salina (barra)
+tela de visualização/ajustes das propriedades dos tecidos
+plotagem das curvas de forças
+
+movimentação do corpo da paciente

@@ -1,0 +1,9 @@
+static void lineChanger(string newText, string fileName, int line_to_edit)
+{
+     string[] arrLine = File.ReadAllLines(fileName);
+     arrLine[line_to_edit - 1] = newText;
+     File.WriteAllLines(fileName, arrLine);
+}
+usage :
+
+lineChanger("new content for this line" , "sample.text" , 34);

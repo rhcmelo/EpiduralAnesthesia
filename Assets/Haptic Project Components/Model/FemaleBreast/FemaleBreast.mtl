@@ -1,0 +1,23 @@
+# Exported from Fuse 1.2.0
+
+newmtl fuse_material
+illum 4
+Kd 0.90 0.77 0.64
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+map_Ka fuse_material.png
+map_Kd fuse_material.png
+
+newmtl PackedMaterial0
+illum 4
+Kd 1.00 1.00 1.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+Ks 1.00 1.00 1.00
+map_Kd FemaleBreast_packed0_diffuse.png
+map_Ks FemaleBreast_packed0_specular.png
+bump FemaleBreast_packed0_normal.png
+map_Ns FemaleBreast_packed0_gloss.png
+
