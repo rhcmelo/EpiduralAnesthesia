@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EpiduralAnesthesia", "Assembly-CSharp.csproj", "{CFEDB4F0-EDDE-1DE5-568B-28E6F727306E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CFEDB4F0-EDDE-1DE5-568B-28E6F727306E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFEDB4F0-EDDE-1DE5-568B-28E6F727306E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFEDB4F0-EDDE-1DE5-568B-28E6F727306E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFEDB4F0-EDDE-1DE5-568B-28E6F727306E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
