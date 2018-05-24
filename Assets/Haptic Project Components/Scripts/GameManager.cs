@@ -6,7 +6,14 @@ public class GameManager : MonoBehaviour {
 	public Transform localizacaoPele;
 	public float escala;
 	public GameObject layers;
-	private Paciente objPaciente;
+    public GameObject spine;
+    public GameObject subcutaneousFat;
+    public GameObject muscle;
+    public GameObject interspinousLigament;
+    public GameObject ligamentumFlavum;
+    public GameObject epiduralSpace;
+    public GameObject duraMater;
+    private Paciente objPaciente;
 	public int pontuacao;
 	public GameObject HUDJogo;
 	public static GameManager instancia = null;
@@ -28,7 +35,9 @@ public class GameManager : MonoBehaviour {
 	public int codigoPerfilPropriedadesTecidos; // código do perfil
 	public string nomeArquivoPropriedadesTecidos; // nome do arquivo texto de propriedades
 
-	void Awake()
+    private bool visibilidadeInterna = false;
+
+    void Awake()
 	{
 		// Persistencia do objeto GameManager
 		if (instancia == null)
@@ -42,7 +51,7 @@ public class GameManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		objPaciente = new Paciente ();
-		objPaciente.peso = 71.1f;
+        objPaciente.peso = 71.1f;
         objPaciente.altura = 1.60f; // rafael
         //objPaciente.pesoMedio = 71.1f;
         objPaciente.idade = 29;
@@ -66,9 +75,29 @@ public class GameManager : MonoBehaviour {
         CarregarPropriedadesTecidos(codigoPerfilPropriedadesTecidos);
 
         HUDJogo.GetComponent<HUDCanvas>().goObjetivo.SetActive(false);
+
+        setVisibilidadeInterna(false);
     }
 
-    public void ExibirObjetivo(int id)
+    private bool getVisibilidadeInterna()
+    {
+        return visibilidadeInterna;
+    }
+
+    private void setVisibilidadeInterna(bool ver)
+    {
+        visibilidadeInterna = ver;
+
+        spine.GetComponent<Renderer>().enabled = visibilidadeInterna;
+        subcutaneousFat.GetComponent<Renderer>().enabled = visibilidadeInterna;
+        muscle.GetComponent<Renderer>().enabled = visibilidadeInterna;
+        interspinousLigament.GetComponent<Renderer>().enabled = visibilidadeInterna;
+        ligamentumFlavum.GetComponent<Renderer>().enabled = visibilidadeInterna;
+        epiduralSpace.GetComponent<Renderer>().enabled = visibilidadeInterna;
+        duraMater.GetComponent<Renderer>().enabled = visibilidadeInterna;
+    }
+
+public void ExibirObjetivo(int id)
 	{
 		HUDJogo.GetComponent<HUDCanvas> ().ExibirObjetivo (id);
 	}
@@ -129,16 +158,17 @@ public class GameManager : MonoBehaviour {
 
 	}
 
-	// Update is called once per frame
-	void Update () {
-		if (Input.GetKeyDown (KeyCode.Alpha1))
-			UsarSeringaAnestesia ();
-			
-		if (Input.GetKeyDown (KeyCode.Alpha2))
-			UsarAgulhaEpidural ();
+    // Update is called once per frame
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+            UsarSeringaAnestesia();
 
-		if (Input.GetKeyDown (KeyCode.Alpha3))
-			UsarSeringaPressao ();
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+            UsarAgulhaEpidural();
+
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+            UsarSeringaPressao();
 
         if (Input.GetKeyDown(KeyCode.R))
         {
@@ -147,9 +177,15 @@ public class GameManager : MonoBehaviour {
                 InicializaJogo();
         }
 
-        // 17-6: escala ok, falta ajustar posicionamento em relação a camada da pele
-        // 24-6: posicionamento ok
-        void PosicionarCamadas()
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            setVisibilidadeInterna(!getVisibilidadeInterna());
+        }
+    }
+
+    // 17-6: escala ok, falta ajustar posicionamento em relação a camada da pele
+    // 24-6: posicionamento ok
+    void PosicionarCamadas()
 	{
 		Tecido propriedadesTecido;
 
