@@ -7,12 +7,6 @@ public class GameManager : MonoBehaviour {
 	public float escala;
 	public GameObject layers;
     public GameObject spine;
-    public GameObject subcutaneousFat;
-    public GameObject muscle;
-    public GameObject interspinousLigament;
-    public GameObject ligamentumFlavum;
-    public GameObject epiduralSpace;
-    public GameObject duraMater;
     private Paciente objPaciente;
 	public int pontuacao;
 	public GameObject HUDJogo;
@@ -89,12 +83,9 @@ public class GameManager : MonoBehaviour {
         visibilidadeInterna = ver;
 
         spine.GetComponent<Renderer>().enabled = visibilidadeInterna;
-        subcutaneousFat.GetComponent<Renderer>().enabled = visibilidadeInterna;
-        muscle.GetComponent<Renderer>().enabled = visibilidadeInterna;
-        interspinousLigament.GetComponent<Renderer>().enabled = visibilidadeInterna;
-        ligamentumFlavum.GetComponent<Renderer>().enabled = visibilidadeInterna;
-        epiduralSpace.GetComponent<Renderer>().enabled = visibilidadeInterna;
-        duraMater.GetComponent<Renderer>().enabled = visibilidadeInterna;
+
+        for(int i=1; i< camadas.Length; i++)
+            camadas[i].GetComponent<Renderer>().enabled = visibilidadeInterna;
     }
 
 public void ExibirObjetivo(int id)
