@@ -9,7 +9,9 @@ public class GameManager : MonoBehaviour {
     public GameObject spine;
     private Paciente objPaciente;
 	public int pontuacao;
-	public GameObject HUDJogo;
+    public int quantidadeDeObjetivos;
+    public int objetivosCompletos;
+    public GameObject HUDJogo;
 	public static GameManager instancia = null;
 	public Objetivo[] objetivos;
 
@@ -108,14 +110,21 @@ public void ExibirObjetivo(int id)
     private void ZerarPontuacao()
     {
         pontuacao = 0;
+        objetivosCompletos = 0;
         HUDJogo.GetComponent<HUDCanvas>().textoPontuacao.text = "Pontos: " + pontuacao;
     }
 
     public void AdicionarPontuacao(int valor)
 	{
-		pontuacao += valor;
-		HUDJogo.GetComponent<HUDCanvas> ().textoPontuacao.text = "Pontos: " + pontuacao;
-	}
+        if (valor > 0)
+            objetivosCompletos++;
+        pontuacao += valor;
+		HUDJogo.GetComponent<HUDCanvas> ().textoPontuacao.text = "Pontos: " + pontuacao + " (" + objetivosCompletos + " de " + quantidadeDeObjetivos + " objetivos completos)";
+
+        if (objetivosCompletos == quantidadeDeObjetivos)
+            GameManager.instancia.SendMessage("Finnish");
+
+    }
 
 	public void AtualizarAngulacao(float angulo, float anguloX, float anguloY, float anguloZ)
 	{
@@ -364,7 +373,14 @@ public void ExibirObjetivo(int id)
 		objetivos [9].descricao = "Anestesiar local";
 		objetivos [9].id        = "Anestesia";
 		objetivos [9].pontos    = 150;
-	}
+
+        quantidadeDeObjetivos = 0;
+        for (int i = 0; i < objetivos.Length; i++)
+        {
+            if (objetivos[i].pontos > 0)
+                quantidadeDeObjetivos++;
+        }
+    }
 
 	public void UsarSeringaAnestesia()
 	{
