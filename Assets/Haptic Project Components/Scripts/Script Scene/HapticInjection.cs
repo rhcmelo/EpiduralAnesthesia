@@ -307,7 +307,7 @@ public class HapticInjection : HapticClassScript {
 				}
 
 				// Verificando tarefas de jogo envolvendo seringa de pressao
-				if (GameManager.instancia.seringaPressao && GameManager.instancia.emboloSeringaPressao)
+				if (GameManager.instancia.AnestesiaLocalRealizada() && GameManager.instancia.seringaPressao && GameManager.instancia.emboloSeringaPressao)
                 {
                     //if (cpHUD2.usandoSeringa && cpHUD2.apertandoEmbolo) {
                     bool bObjPlunger = false;
@@ -341,20 +341,32 @@ public class HapticInjection : HapticClassScript {
 				}
 
 				// Verificando tarefas de jogo envolvendo seringa de anestesia
-				if (GameManager.instancia.seringaAnestesia && PluginImport.GetButton1State()) {
-                    for (int i = GameManager.instancia.objetivos.Length-1; i >= 0; i--)
-                    //for (int i = 0; i < GameManager.instancia.objetivos.Length; i++)
+                for (int i = GameManager.instancia.objetivos.Length-1; i >= 0; i--)
+                //for (int i = 0; i < GameManager.instancia.objetivos.Length; i++)
+                {
+                    if (GameManager.instancia.seringaAnestesia && PluginImport.GetButton1State())
                     {
                         // verificando se o objetivo pode ser pontuado
 
                         // seringa de anestesia em qualquer tecido
-                        if (!GameManager.instancia.objetivos [i].realizado && GameManager.instancia.objetivos [i].id == "Anestesia")
+                        if (!GameManager.instancia.objetivos[i].realizado && GameManager.instancia.objetivos[i].id == "Anestesia")
                         {
-							GameManager.instancia.AtualizarObjetivo(i);
+                            GameManager.instancia.AtualizarObjetivo(i);
                             break; // rafael
                         }
-					}
-				}
+                    }
+                    else if (!GameManager.instancia.seringaAnestesia)
+                    {
+                        // verificando se o objetivo pode ser pontuado
+
+                        // seringa de anestesia em qualquer tecido
+                        if (!GameManager.instancia.objetivos[i].realizado && GameManager.instancia.objetivos[i].id == "SemAnestesia")
+                        {
+                            GameManager.instancia.AtualizarObjetivo(i);
+                            break; // rafael
+                        }
+                    }
+                }
 
 				// Troca de tecido - atualizando propriedades do tecido
 				if (cpHUD2.objectName != colisorTecidoAtual.name) { // Trocou de camada
@@ -363,7 +375,7 @@ public class HapticInjection : HapticClassScript {
 					//Debug.Log(i + ":" + hits[i].collider.name + ":" + hits[i].distance + " > " + profundidade);
 
 					// Percorrendo os objetivos do jogo
-					if (GameManager.instancia.agulhaEpidural) {
+					if (GameManager.instancia.AnestesiaLocalRealizada() && GameManager.instancia.agulhaEpidural) {
                         for (int i = 0; i < GameManager.instancia.objetivos.Length; i++)
                         {
                             // verificando se o objetivo pode ser pontuado

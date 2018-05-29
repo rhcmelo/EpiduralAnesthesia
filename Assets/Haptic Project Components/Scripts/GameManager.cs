@@ -90,7 +90,7 @@ public class GameManager : MonoBehaviour {
             camadas[i].GetComponent<Renderer>().enabled = visibilidadeInterna;
     }
 
-public void ExibirObjetivo(int id)
+    public void ExibirObjetivo(int id)
 	{
 		HUDJogo.GetComponent<HUDCanvas> ().ExibirObjetivo (id);
 	}
@@ -311,10 +311,11 @@ public void ExibirObjetivo(int id)
 
 	void ConfigurarObjetivos()
 	{
-		// Configurando os objetivos do jogo
-		objetivos = new Objetivo[10];
+        // Configurando os objetivos do jogo
+        //objetivos = new Objetivo[10];
+        objetivos = new Objetivo[11];
 
-		objetivos [0] = new Objetivo ();
+        objetivos [0] = new Objetivo ();
 		objetivos [0].realizado = false;
 		objetivos [0].descricao = "Penetrar a pele";
 		objetivos [0].id        = "Body";
@@ -374,6 +375,12 @@ public void ExibirObjetivo(int id)
 		objetivos [9].id        = "Anestesia";
 		objetivos [9].pontos    = 150;
 
+        objetivos[10] = new Objetivo();
+        objetivos[10].realizado = false;
+        objetivos[10].descricao = "Esqueceu de anestesiar local";
+        objetivos[10].id = "SemAnestesia";
+        objetivos[10].pontos = -100;
+
         quantidadeDeObjetivos = 0;
         for (int i = 0; i < objetivos.Length; i++)
         {
@@ -382,7 +389,13 @@ public void ExibirObjetivo(int id)
         }
     }
 
-	public void UsarSeringaAnestesia()
+    public bool AnestesiaLocalRealizada()
+    {
+        return objetivos[9].realizado;
+    }
+
+
+    public void UsarSeringaAnestesia()
 	{
         // rafael
         // Obtendo o % de penetração
