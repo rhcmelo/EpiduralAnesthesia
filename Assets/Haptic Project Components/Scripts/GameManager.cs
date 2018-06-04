@@ -31,6 +31,9 @@ public class GameManager : MonoBehaviour {
 	public int codigoPerfilPropriedadesTecidos; // código do perfil
 	public string nomeArquivoPropriedadesTecidos; // nome do arquivo texto de propriedades
 
+    public Shader shaderTransparent;
+    public Shader shaderTexture;
+
     private bool visibilidadeInterna = false;
 
     void Awake()
@@ -42,10 +45,13 @@ public class GameManager : MonoBehaviour {
 			Destroy (gameObject);
 
 		DontDestroyOnLoad (gameObject);
-	}
 
-	// Use this for initialization
-	void Start () {
+        shaderTransparent = Shader.Find("Legacy Shaders/Transparent/Diffuse");
+        shaderTexture = Shader.Find("Unlit/Texture");
+    }
+
+    // Use this for initialization
+    void Start () {
 		objPaciente = new Paciente ();
         objPaciente.peso = 71.1f;
         objPaciente.altura = 1.60f; // rafael
@@ -88,6 +94,11 @@ public class GameManager : MonoBehaviour {
 
         for(int i=1; i< camadas.Length; i++)
             camadas[i].GetComponent<Renderer>().enabled = visibilidadeInterna;
+
+        if (visibilidadeInterna)
+            camadas[0].GetComponent<Renderer>().material.shader = shaderTransparent;
+        else
+            camadas[0].GetComponent<Renderer>().material.shader = shaderTexture;
     }
 
     public void ExibirObjetivo(int id)
