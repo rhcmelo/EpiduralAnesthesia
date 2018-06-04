@@ -419,7 +419,10 @@ public class HapticInjection : HapticClassScript {
 					propriedadesTecido = colisorTecidoAtual.gameObject.GetComponent<Tecido> ();
 					cpHUD2.pressaoSalina = propriedadesTecido.kPaSalina;
 					cpHUD2.pressaoAr = propriedadesTecido.kPaAr;
-				}
+
+                    // Rafael - para mostrar sempre a pressão 
+                    goHUDCanvas.GetComponent<HUDCanvas>().SetPressaoSalina(propriedadesTecido.kPaSalina);
+                }
 
 				/*Declaration of the Puncture Stack
 				 * Additionally, on the basis of the puncture stack components, the plugin setup a penetration restriction

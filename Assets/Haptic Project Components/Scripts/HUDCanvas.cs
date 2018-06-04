@@ -19,20 +19,39 @@ public class HUDCanvas : MonoBehaviour {
 	public Text   textoForcaZ;
 	public Text   textoProfundidade;
 	public Text   textoCamada;
+    public Text   txtPressaoSalina;
+    public float  pressaoSalina;
 
-	public GameObject goObjetivo;
+    public void SetPressaoSalina(float _pressaoSalina)
+    {
+        pressaoSalina = _pressaoSalina;
+    }
+
+    public GameObject goObjetivo;
 	public Text txtObjetivo;
 	public Text txtPontosObjetivo;
 
 	// Use this for initialization
 	void Start () {
         goObjetivo.SetActive(false);
-
+        txtPressaoSalina.text = "";
+        pressaoSalina = 0;
     }
-	
-	// Update is called once per frame
-	void Update () {
-	}
+
+    // Update is called once per frame
+    void Update() {
+        if (GameManager.instancia.seringaPressao && GameManager.instancia.emboloSeringaPressao)
+        { // Está pressionando o embolo da seringa (botao 1)
+            string valor = pressaoSalina.ToString("f2");
+            string strPressao = "Pressão Salina: " + valor;
+            
+            txtPressaoSalina.text = strPressao;
+        }
+        else
+        {
+            txtPressaoSalina.text = "";
+        }
+    }
 
 	public void ExibirObjetivo(int id)
 	{
