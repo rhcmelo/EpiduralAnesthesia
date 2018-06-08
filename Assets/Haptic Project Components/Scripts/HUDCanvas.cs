@@ -21,6 +21,9 @@ public class HUDCanvas : MonoBehaviour {
 	public Text   textoCamada;
     public Text   txtPressaoSalina;
     public float  pressaoSalina;
+    public Text   txtAlturaPaciente;
+    public Text   txtPesoPaciente;
+    public Text   txtIdadePaciente;
 
     public void SetPressaoSalina(float _pressaoSalina)
     {
@@ -63,4 +66,11 @@ public class HUDCanvas : MonoBehaviour {
 		txtObjetivo.text = textoObjetivo;
 		txtPontosObjetivo.text = textoPontuacao;
 	}
+
+    public void AtualizarDadosPaciente(float _atura, float _peso, int _idade)
+    {
+        txtAlturaPaciente.text = _atura.ToString("f2") + " m";
+        txtPesoPaciente.text = _peso.ToString("f1") + " kg";
+        txtIdadePaciente.text = _idade.ToString() + " anos";
+    }
 }

@@ -52,13 +52,7 @@ public class GameManager : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-		objPaciente = new Paciente ();
-        objPaciente.peso = 119.5f;// 58.2f;// 71.1f;
-        objPaciente.altura = 1.56f;// 1.72f;// 1.60f; // rafael
-        //objPaciente.pesoMedio = 71.1f;
-        objPaciente.idade = 34;// 19;// 29;
-        //objPaciente.raioMedioCintura = 13.52809f;
-        //objPaciente.areaMediaCintura = 574.94f;
+		
 
         InicializaJogo();
 
@@ -66,6 +60,17 @@ public class GameManager : MonoBehaviour {
 
     private void InicializaJogo()
     {
+        if(objPaciente == null)
+            objPaciente = new Paciente();
+        objPaciente.peso = 119.5f;// 58.2f;// 71.1f;
+        objPaciente.altura = 1.56f;// 1.72f;// 1.60f; // rafael
+        //objPaciente.pesoMedio = 71.1f;
+        objPaciente.idade = 34;// 19;// 29;
+        //objPaciente.raioMedioCintura = 13.52809f;
+        //objPaciente.areaMediaCintura = 574.94f;
+
+        HUDJogo.GetComponent<HUDCanvas>().AtualizarDadosPaciente(objPaciente.altura, objPaciente.peso, objPaciente.idade);
+
         PosicionarCamadas();
 
         ZerarPontuacao();
