@@ -360,7 +360,7 @@ public class HapticInjection : HapticClassScript {
                         // verificando se o objetivo pode ser pontuado
 
                         // seringa de anestesia em qualquer tecido
-                        if (!GameManager.instancia.objetivos[i].realizado && GameManager.instancia.objetivos[i].id == "SemAnestesia")
+                        if (!GameManager.instancia.objetivos[i].realizado && !GameManager.instancia.AnestesiaLocalRealizada() && GameManager.instancia.objetivos[i].id == "SemAnestesia")
                         {
                             GameManager.instancia.AtualizarObjetivo(i);
                             break; // rafael

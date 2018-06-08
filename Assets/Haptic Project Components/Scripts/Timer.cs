@@ -13,6 +13,7 @@ public class Timer : MonoBehaviour {
     {
         startTime = Time.time;
         finished = false;
+        timerText.color = Color.gray;
     }
 	
 	// Update is called once per frame
@@ -41,4 +42,12 @@ public class Timer : MonoBehaviour {
         finished = true;
         timerText.color = Color.red;
     }
+
+    void ReStart()
+    {
+        startTime = Time.time;
+        finished = false;
+        timerText.color = Color.gray;
+    }
+
 }

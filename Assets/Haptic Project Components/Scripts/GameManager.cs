@@ -53,10 +53,10 @@ public class GameManager : MonoBehaviour {
     // Use this for initialization
     void Start () {
 		objPaciente = new Paciente ();
-        objPaciente.peso = 71.1f;
-        objPaciente.altura = 1.60f; // rafael
+        objPaciente.peso = 119.5f;// 58.2f;// 71.1f;
+        objPaciente.altura = 1.56f;// 1.72f;// 1.60f; // rafael
         //objPaciente.pesoMedio = 71.1f;
-        objPaciente.idade = 29;
+        objPaciente.idade = 34;// 19;// 29;
         //objPaciente.raioMedioCintura = 13.52809f;
         //objPaciente.areaMediaCintura = 574.94f;
 
@@ -99,6 +99,18 @@ public class GameManager : MonoBehaviour {
             camadas[0].GetComponent<Renderer>().material.shader = shaderTransparent;
         else
             camadas[0].GetComponent<Renderer>().material.shader = shaderTexture;
+
+        // Faz desaparecer mas não faz aparecer
+        //GameObject.Find("FeedBackInfo").SetActive(visibilidadeInterna);
+        //não esconde
+        //GameObject.Find("FeedBackInfo").GetComponent<Renderer>().enabled = visibilidadeInterna;
+        /*CanvasGroup cg = GameObject.Find("FeedBackInfo").GetComponent<CanvasGroup>();
+        cg.interactable = false;
+        if (visibilidadeInterna)
+            cg.alpha = 1;
+        else
+            cg.alpha = 0;
+        */
     }
 
     public void ExibirObjetivo(int id)
@@ -186,6 +198,8 @@ public class GameManager : MonoBehaviour {
             // se não está perfurando pode reiniciar o jogo
             if (PluginImport.GetPenetrationRatio() == 0)
                 InicializaJogo();
+
+            GameManager.instancia.SendMessage("ReStart");
         }
 
         if (Input.GetKeyDown(KeyCode.V))
