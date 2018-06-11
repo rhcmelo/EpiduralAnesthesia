@@ -58,16 +58,39 @@ public class GameManager : MonoBehaviour {
 
     }
 
-    private void InicializaJogo()
+    private void DadosPaciente()
     {
-        if(objPaciente == null)
+        if (objPaciente == null)
             objPaciente = new Paciente();
-        objPaciente.peso = 119.5f;// 58.2f;// 71.1f;
-        objPaciente.altura = 1.56f;// 1.72f;// 1.60f; // rafael
+
+        // paciente com maior IMC
+        /*
+        objPaciente.peso = 119.5f;
+        objPaciente.altura = 1.56f;
+        objPaciente.idade = 34;
+        */
+
+        // paciente com menor IMC 
+        /*
+        objPaciente.peso = 58.2f;
+        objPaciente.altura = 1.72f;
+        objPaciente.idade = 19;
+        */
+
+        // paciente com menor IMC médio
+        /**/
+        objPaciente.peso = 71.1f;
+        objPaciente.altura = 1.60f; // rafael
         //objPaciente.pesoMedio = 71.1f;
-        objPaciente.idade = 34;// 19;// 29;
+        objPaciente.idade = 29;
         //objPaciente.raioMedioCintura = 13.52809f;
         //objPaciente.areaMediaCintura = 574.94f;
+        //**/
+    }
+
+    private void InicializaJogo()
+    {
+        DadosPaciente();
 
         HUDJogo.GetComponent<HUDCanvas>().AtualizarDadosPaciente(objPaciente.altura, objPaciente.peso, objPaciente.idade);
 
