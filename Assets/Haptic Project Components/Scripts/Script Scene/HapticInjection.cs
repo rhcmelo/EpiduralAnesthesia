@@ -379,7 +379,7 @@ public class HapticInjection : HapticClassScript {
                         for (int i = 0; i < GameManager.instancia.objetivos.Length; i++)
                         {
                             // verificando se o objetivo pode ser pontuado
-                            if (!GameManager.instancia.objetivos [i].realizado && GameManager.instancia.objetivos [i].id == colisorTecidoAtual.name) {
+                            if (!GameManager.instancia.objetivos [i].realizado && colisorTecidoAtual.name.StartsWith(GameManager.instancia.objetivos [i].id) ) {
 								GameManager.instancia.AtualizarObjetivo(i);
                                 break; // rafael
 							}
