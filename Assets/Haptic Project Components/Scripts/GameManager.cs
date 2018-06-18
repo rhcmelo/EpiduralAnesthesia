@@ -19,16 +19,18 @@ public class GameManager : MonoBehaviour {
 	public GameObject goSeringaAnestesia;
 	public GameObject goAgulhaEpidural;
 	public GameObject goSeringaPressao;
+    public GameObject goDedo;
 
-	// Utilização dos Instrumentos
-	public bool seringaAnestesia;
+    // Utilização dos Instrumentos
+    public bool seringaAnestesia;
 	public bool agulhaEpidural;
 	public bool seringaPressao;
 	public bool emboloSeringaPressao;
-	//public bool emboloSeringaAnestesia;
+    public bool dedo;
+    //public bool emboloSeringaAnestesia;
 
-	// Perfil de propriedades dos tecidos
-	public int codigoPerfilPropriedadesTecidos; // código do perfil
+    // Perfil de propriedades dos tecidos
+    public int codigoPerfilPropriedadesTecidos; // código do perfil
 	public string nomeArquivoPropriedadesTecidos; // nome do arquivo texto de propriedades
 
     public Shader shaderTransparent;
@@ -107,6 +109,11 @@ public class GameManager : MonoBehaviour {
         HUDJogo.GetComponent<HUDCanvas>().goObjetivo.SetActive(false);
 
         setVisibilidadeInterna(false);
+
+        goAgulhaEpidural.SetActive(false);
+        goSeringaPressao.SetActive(false);
+        goDedo.SetActive(false);
+        goSeringaAnestesia.SetActive(true);
     }
 
     private bool getVisibilidadeInterna()
@@ -220,6 +227,9 @@ public class GameManager : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.Alpha3))
             UsarSeringaPressao();
+
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+            UsarDedo();
 
         if (Input.GetKeyDown(KeyCode.R))
         {
@@ -447,6 +457,49 @@ public class GameManager : MonoBehaviour {
         return objetivos[9].realizado;
     }
 
+    private void NoPuncture()
+    {
+        int id = camadas[0].GetComponent<HapticProperties>().objectId;
+        PluginImport.SetStiffness(id, 1);
+        PluginImport.SetDamping(id, 0);
+        PluginImport.SetStaticFriction(id, 0);
+        PluginImport.SetDynamicFriction(id, 0);
+        //PluginImport.SetTangentialStiffness(id, 0);
+        //PluginImport.SetTangentialDamping(id, 0);
+        PluginImport.SetPopThrough(id, 0);
+        //PluginImport.SetPuncturedStaticFriction(id, 0);
+        PluginImport.SetPuncturedDynamicFriction(id, 0);
+    }
+
+    private void Puncture()
+    {
+        int id = camadas[0].GetComponent<HapticProperties>().objectId;
+        PluginImport.SetStiffness(id, 0.8f);
+        PluginImport.SetDamping(id, 0.45f);
+        PluginImport.SetStaticFriction(id, 0.02f);
+        PluginImport.SetDynamicFriction(id, 0.03f);
+        //PluginImport.SetTangentialStiffness(id, 0);
+        //PluginImport.SetTangentialDamping(id, 0);
+        PluginImport.SetPopThrough(id, 0.05f);
+        //PluginImport.SetPuncturedStaticFriction(id, 0);
+        PluginImport.SetPuncturedDynamicFriction(id, 0.08f);
+    }
+    public void UsarDedo()
+    {
+        dedo = true;
+        goDedo.SetActive(dedo);
+
+        seringaAnestesia = false;
+        goSeringaAnestesia.SetActive(seringaAnestesia);
+        seringaPressao = false;
+        goSeringaPressao.SetActive(seringaPressao);
+        agulhaEpidural = false;
+        goAgulhaEpidural.SetActive(agulhaEpidural);
+
+        NoPuncture();
+
+    }
+
 
     public void UsarSeringaAnestesia()
 	{
@@ -472,7 +525,16 @@ public class GameManager : MonoBehaviour {
 			seringaPressao = !seringaPressao;
 			goSeringaPressao.SetActive (seringaPressao);
 		}
-	}
+
+        if(dedo)
+        {
+            dedo = !dedo;
+            goDedo.SetActive(dedo);
+
+            Puncture();
+        }
+
+    }
 
 	public void UsarAgulhaEpidural()
 	{
@@ -500,6 +562,13 @@ public class GameManager : MonoBehaviour {
             goSeringaPressao.SetActive(seringaPressao);
         }
 
+        if (dedo)
+        {
+            dedo = !dedo;
+            goDedo.SetActive(dedo);
+
+            Puncture();
+        }
     }
 
     public void UsarSeringaPressao()
@@ -526,5 +595,13 @@ public class GameManager : MonoBehaviour {
 			seringaAnestesia = !seringaAnestesia;
 			goSeringaAnestesia.SetActive (seringaAnestesia);
 		}
-	}
+
+        if (dedo)
+        {
+            dedo = !dedo;
+            goDedo.SetActive(dedo);
+
+            Puncture();
+        }
+    }
 }
