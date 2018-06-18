@@ -72,97 +72,101 @@ public class HapticInjection : HapticClassScript {
 		if (cpArquivo2 != null) cpArquivo2.Fechar ();
 	}
 
-	void Start()
-	{
-		tempoUltimaTroca = 0.0f; // Troca de seringa
+    void Start()
+    {
+        CleanUp();
+
+        ModeIndex = 3;
+
+        tempoUltimaTroca = 0.0f; // Troca de seringa
 
         // rafael para não ultrapasar tamanho da seringa
         maxPenetration = 0.6f;
 
         // gravação por profundidade
         intervaloGravacao2 = 1.0f;
-		profundidadeGravacao2 = -0.9f;
+        profundidadeGravacao2 = -0.9f;
 
-		// Inicializando arquivos de registro
-		cpArquivo = new Arquivo ();
-		cpArquivo.Abrir("Log.txt");
-		tempo = 0.0f;
-		tempoGravacao = 0.0f;
+        // Inicializando arquivos de registro
+        cpArquivo = new Arquivo();
+        cpArquivo.Abrir("Log.txt");
+        tempo = 0.0f;
+        tempoGravacao = 0.0f;
 
-		cpArquivo2 = new Arquivo ();
-		cpArquivo2.Abrir("LogProfundidade.txt");
+        cpArquivo2 = new Arquivo();
+        cpArquivo2.Abrir("LogProfundidade.txt");
 
-		// inicializando angulação da agulha 
-		angulo = 0.0f; anguloX = 0.0f; anguloY = 0.0f; anguloZ=0.0f;
+        // inicializando angulação da agulha 
+        angulo = 0.0f; anguloX = 0.0f; anguloY = 0.0f; anguloZ = 0.0f;
 
-		if(PluginImport.InitHapticDevice())
-		{
-			Debug.Log("OpenGL Context Launched");
-			Debug.Log("Haptic Device Launched");
-			
-			myGenericFunctionsClassScript.SetHapticWorkSpace();
-			myGenericFunctionsClassScript.GetHapticWorkSpace();
-			
-			//Update Workspace as function of camera
-			PluginImport.UpdateWorkspace(myHapticCamera.transform.rotation.eulerAngles.y);
-			
-			//Set Mode of Interaction
-			/*
+        if (PluginImport.InitHapticDevice())
+        {
+            Debug.Log("OpenGL Context Launched");
+            Debug.Log("Haptic Device Launched");
+
+            myGenericFunctionsClassScript.SetHapticWorkSpace();
+            myGenericFunctionsClassScript.GetHapticWorkSpace();
+
+            //Update Workspace as function of camera
+            PluginImport.UpdateWorkspace(myHapticCamera.transform.rotation.eulerAngles.y);
+
+            //Set Mode of Interaction
+            /*
 			 * Mode = 0 Contact
 			 * Mode = 1 Manipulation - So objects will have a mass when handling them
 			 * Mode = 2 Custom Effect - So the haptic device simulate vibration and tangential forces as power tools
 			 * Mode = 3 Puncture - So the haptic device is a needle that puncture inside a geometry
 			 */
-			PluginImport.SetMode(ModeIndex);
-			//Show a text descrition of the mode
-			myGenericFunctionsClassScript.IndicateMode();
-				
+            PluginImport.SetMode(ModeIndex);
+            //Show a text descrition of the mode
+            myGenericFunctionsClassScript.IndicateMode();
+
             //Define a Penetration direction Vector - useful for brain biopsy for instance.
             //For realism, the orientation of the needle will need to be detached from that of the haptic device
             //The new orientation on local Z of the needle will be that indicated by the vector set below.
             /*double[] injectionDir = new double[3]{0.0f,0.0f,1.0f};
             PluginImport.SetPunctureDirection(ConverterClass.ConvertDouble3ToIntPtr(injectionDir));*/
 
-			//Set the lenght of the syringue needle to penetrate inside the tissue
-			PluginImport.SetMaximumPunctureLenght(maxPenetration);
+            //Set the lenght of the syringue needle to penetrate inside the tissue
+            PluginImport.SetMaximumPunctureLenght(maxPenetration);
 
-			//Set the touchable face(s)
-			PluginImport.SetTouchableFace(ConverterClass.ConvertStringToByteToIntPtr(TouchableFace));
+            //Set the touchable face(s)
+            PluginImport.SetTouchableFace(ConverterClass.ConvertStringToByteToIntPtr(TouchableFace));
 
-			Debug.Log ("device:" + PluginImport.hdGetCurrentDevice().ToString());
-			
-		}
-		else
-			Debug.Log("Haptic Device cannot be launched");
+            Debug.Log("device:" + PluginImport.hdGetCurrentDevice().ToString());
+
+        }
+        else
+            Debug.Log("Haptic Device cannot be launched");
 
 
-		/***************************************************************/
-		//Set Environmental Haptic Effect
-		/***************************************************************/
+        /***************************************************************/
+        //Set Environmental Haptic Effect
+        /***************************************************************/
 
-			// Constant Force Example - We use this environmental force effect to simulate the weight of the cursor
-			myGenericFunctionsClassScript.SetEnvironmentConstantForce();
-		myGenericFunctionsClassScript.SetEnvironmentViscosity();
-		//myGenericFunctionsClassScript.SetEnvironmentSpring();
-			
-		/***************************************************************/
-		//Setup the Haptic Geometry in the OpenGL context
-		/***************************************************************/
-		myGenericFunctionsClassScript.SetHapticGeometry();
+        // Constant Force Example - We use this environmental force effect to simulate the weight of the cursor
+        myGenericFunctionsClassScript.SetEnvironmentConstantForce();
+        myGenericFunctionsClassScript.SetEnvironmentViscosity();
+        //myGenericFunctionsClassScript.SetEnvironmentSpring();
 
-		//Get the Number of Haptic Object
-		//Debug.Log ("Total Number of Haptic Objects: " + PluginImport.GetHapticObjectCount());
+        /***************************************************************/
+        //Setup the Haptic Geometry in the OpenGL context
+        /***************************************************************/
+        myGenericFunctionsClassScript.SetHapticGeometry();
 
-		/***************************************************************/
-		//Launch the Haptic Event for all different haptic objects
-		/***************************************************************/
-		PluginImport.LaunchHapticEvent();
-	}
+        //Get the Number of Haptic Object
+        //Debug.Log ("Total Number of Haptic Objects: " + PluginImport.GetHapticObjectCount());
 
-	void Update()
-	{
-		// Atualizando a contagem do tempo
-		tempo += Time.deltaTime;
+        /***************************************************************/
+        //Launch the Haptic Event for all different haptic objects
+        /***************************************************************/
+        PluginImport.LaunchHapticEvent(); 
+    }
+
+    void Update()
+    {
+        // Atualizando a contagem do tempo
+        tempo += Time.deltaTime;
 
 		// Inserção / Retirada da Seringa
 		AtualizaSeringaPressao ();
@@ -486,15 +490,22 @@ public class HapticInjection : HapticClassScript {
          */
 	}
 
-	void OnDisable()
+    void CleanUp()
+    {
+        if (PluginImport.HapticCleanUp())
+        {
+            Debug.Log("Haptic Context CleanUp");
+            Debug.Log("Desactivate Device");
+            Debug.Log("OpenGL Context CleanUp");
+        }
+
+    }
+
+    void OnDisable()
 	{
-		if (PluginImport.HapticCleanUp())
-		{
-			Debug.Log("Haptic Context CleanUp");
-			Debug.Log("Desactivate Device");
-			Debug.Log("OpenGL Context CleanUp");
-		}
-	}
+        CleanUp();
+
+    }
 
 
 	void SetPunctureStack(int nbLayer ,string[] name, float[] array)

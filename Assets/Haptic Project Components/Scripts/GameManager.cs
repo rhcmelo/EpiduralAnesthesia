@@ -29,6 +29,10 @@ public class GameManager : MonoBehaviour {
     public bool dedo;
     //public bool emboloSeringaAnestesia;
 
+    public enum Posicao { Sentada, DeitadaEsquerda };
+
+    public Posicao posicaoPaciente = Posicao.Sentada;
+
     // Perfil de propriedades dos tecidos
     public int codigoPerfilPropriedadesTecidos; // código do perfil
 	public string nomeArquivoPropriedadesTecidos; // nome do arquivo texto de propriedades
@@ -110,10 +114,26 @@ public class GameManager : MonoBehaviour {
 
         setVisibilidadeInterna(false);
 
-        goAgulhaEpidural.SetActive(false);
-        goSeringaPressao.SetActive(false);
-        goDedo.SetActive(false);
-        goSeringaAnestesia.SetActive(true);
+        ///* Para começar com injeção
+        //dedo = false;
+        //seringaAnestesia = true;
+        ///
+
+        ///* Para começar com injeção
+        dedo = true;
+        seringaAnestesia = false;
+        ///
+        
+        agulhaEpidural = false;
+        seringaPressao = false;
+
+        goAgulhaEpidural.SetActive(agulhaEpidural);
+        goSeringaPressao.SetActive(seringaPressao);
+        goSeringaAnestesia.SetActive(seringaAnestesia);
+        goDedo.SetActive(dedo);
+        if(dedo)
+            NoPuncture();
+        ///*
     }
 
     private bool getVisibilidadeInterna()
@@ -231,7 +251,7 @@ public class GameManager : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Alpha4))
             UsarDedo();
 
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R)) // Reiniciar jogo
         {
             // se não está perfurando pode reiniciar o jogo
             if (PluginImport.GetPenetrationRatio() == 0)
@@ -240,10 +260,14 @@ public class GameManager : MonoBehaviour {
             GameManager.instancia.SendMessage("ReStart");
         }
 
-        if (Input.GetKeyDown(KeyCode.V))
+        if (Input.GetKeyDown(KeyCode.V)) // Alternar visualização de camadas
         {
             setVisibilidadeInterna(!getVisibilidadeInterna());
         }
+
+        if (Input.GetKeyDown(KeyCode.P)) // Alternar posição do paciente
+            PosicaoPaciente();
+
     }
 
     // 17-6: escala ok, falta ajustar posicionamento em relação a camada da pele
@@ -462,8 +486,8 @@ public class GameManager : MonoBehaviour {
         int id = camadas[0].GetComponent<HapticProperties>().objectId;
         PluginImport.SetStiffness(id, 1);
         PluginImport.SetDamping(id, 0);
-        PluginImport.SetStaticFriction(id, 0);
-        PluginImport.SetDynamicFriction(id, 0);
+        PluginImport.SetStaticFriction(id, 0.02f);
+        PluginImport.SetDynamicFriction(id, 0.03f);
         //PluginImport.SetTangentialStiffness(id, 0);
         //PluginImport.SetTangentialDamping(id, 0);
         PluginImport.SetPopThrough(id, 0);
@@ -603,5 +627,36 @@ public class GameManager : MonoBehaviour {
 
             Puncture();
         }
+    }
+
+    public void PosicaoPaciente()
+    {
+        float rotacao = 90.0f;
+        if(posicaoPaciente == Posicao.Sentada) // Alternar para posição em decúbito lateral esquerdo
+        {
+            Vector3 pontoCentral = camadas[0].GetComponent<Renderer>().bounds.center;
+            Vector3 eixo = new Vector3(0, 0, 1);
+            for (int i = 0; i < camadas.Length; i++)
+                camadas[i].GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixo, rotacao);
+            spine.GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixo, rotacao);
+
+            posicaoPaciente = Posicao.DeitadaEsquerda;
+
+            // Rodar a câmera lateral
+        }
+        else // (posicaoPaciente == Posicao.DeitadaEsquerda) // Alternar para posição sentada
+        {
+            Vector3 pontoCentral = camadas[0].GetComponent<Renderer>().bounds.center;
+            Vector3 eixo = new Vector3(0, 0, 1);
+            for (int i = 0; i < camadas.Length; i++)
+                camadas[i].GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixo, -rotacao);
+            spine.GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixo, -rotacao);
+            posicaoPaciente = Posicao.Sentada;
+
+            // Rodar a câmera lateral
+        }
+
+        RotateView.instancia.SendMessage("PosicionarPaciente");
+
     }
 }
