@@ -633,30 +633,52 @@ public class GameManager : MonoBehaviour {
 
     public void PosicaoPaciente()
     {
-        Vector3 eixo = new Vector3(0, 0, 1);
         Vector3 pontoCentral = camadas[0].GetComponent<Renderer>().bounds.center;
 
         sideCamera  = GameObject.Find("Side Camera (Lateral View)");
 
-        float rotacao = 90.0f;
-        if(posicaoPaciente == Posicao.Sentada) // Alternar para posição em decúbito lateral esquerdo
+        Vector3 eixoZ = new Vector3(0, 0, 1);
+        float rotacaoZ = 90.0f;
+
+        Vector3 eixoY = new Vector3(0, 1, 0);
+        float rotacaoY = -21.0f;
+
+        if (posicaoPaciente == Posicao.Sentada) // Alternar para posição em decúbito lateral esquerdo
         {
             posicaoPaciente = Posicao.DeitadaEsquerda;
+
+            for (int i = 0; i < camadas.Length; i++)
+            {
+                camadas[i].GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
+                camadas[i].GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixoY, rotacaoY);
+            }
+            spine.GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
+            spine.GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixoY, rotacaoY);
+
+            // Rodar a câmera lateral
+            sideCamera.transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
+            sideCamera.transform.RotateAround(pontoCentral, eixoY, rotacaoY);
         }
         else // (posicaoPaciente == Posicao.DeitadaEsquerda) // Alternar para posição sentada
         {
-            rotacao = -rotacao;
+            rotacaoZ = -rotacaoZ;
+            rotacaoY = -rotacaoY;
 
             posicaoPaciente = Posicao.Sentada;
+
+            for (int i = 0; i < camadas.Length; i++)
+            {
+                camadas[i].GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixoY, rotacaoY);
+                camadas[i].GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
+            }
+            spine.GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixoY, rotacaoY);
+            spine.GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
+
+            // Rodar a câmera lateral
+            sideCamera.transform.RotateAround(pontoCentral, eixoY, rotacaoY);
+            sideCamera.transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
         }
-
-        for (int i = 0; i < camadas.Length; i++)
-            camadas[i].GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixo, rotacao);
-        spine.GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixo, rotacao);
-
-        // Rodar a câmera lateral
-        sideCamera.transform.RotateAround(pontoCentral, eixo, rotacao);
-
+        
         RotateView.instancia.SendMessage("PosicionarPaciente");
 
     }
