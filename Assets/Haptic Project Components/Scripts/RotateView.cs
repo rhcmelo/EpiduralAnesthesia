@@ -53,13 +53,13 @@ public class RotateView : MonoBehaviour {
         }
         else //if (GameManager.instancia.posicaoPaciente == GameManager.Posicao.DeitadaEsquerda)
         {
-            if (Input.GetKey(KeyCode.RightArrow) && ((x < 50) || (x > 320)))
+            if (Input.GetKey(KeyCode.RightArrow) && ((x < 40) || (x > 310)))
             {
                 Debug.Log("Angulos x,y: " + transform.eulerAngles.x.ToString() + " , " + transform.eulerAngles.y.ToString());
 
                 transform.Rotate(move, 0.0f, 0.0f);
             }
-            else if (Input.GetKey(KeyCode.LeftArrow) && ((x < 40) || (x > 310)))
+            else if (Input.GetKey(KeyCode.LeftArrow) && ((x < 50) || (x > 320))) 
             {
                 Debug.Log("Angulos x,y: " + transform.eulerAngles.x.ToString() + " , " + transform.eulerAngles.y.ToString());
 
