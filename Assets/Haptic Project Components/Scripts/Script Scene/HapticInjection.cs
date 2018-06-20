@@ -628,7 +628,9 @@ public class HapticInjection : HapticClassScript {
             if ((!bEstaPerfurando && GameManager.instancia.seringaAnestesia) || (bEstaPerfurando && GameManager.instancia.seringaPressao))
                 GameManager.instancia.UsarAgulhaEpidural();
             else if (GameManager.instancia.agulhaEpidural && !GameManager.instancia.seringaPressao)
-                GameManager.instancia.UsarSeringaPressao ();
+                GameManager.instancia.UsarSeringaPressao();
+            else if (!bEstaPerfurando && GameManager.instancia.agulhaEpidural && GameManager.instancia.seringaPressao)
+                GameManager.instancia.UsarDedo();
             else
                 GameManager.instancia.UsarSeringaAnestesia();
 
