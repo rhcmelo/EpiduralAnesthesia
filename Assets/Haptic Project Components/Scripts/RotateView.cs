@@ -57,13 +57,13 @@ public class RotateView : MonoBehaviour {
             {
                 Debug.Log("Angulos x,y: " + transform.eulerAngles.x.ToString() + " , " + transform.eulerAngles.y.ToString());
 
-                transform.Rotate(-move, 0.0f, 0.0f);
+                transform.Rotate(move, 0.0f, 0.0f);
             }
             else if (Input.GetKey(KeyCode.LeftArrow) && ((x < 40) || (x > 310)))
             {
                 Debug.Log("Angulos x,y: " + transform.eulerAngles.x.ToString() + " , " + transform.eulerAngles.y.ToString());
 
-                transform.Rotate(move, 0.0f, 0.0f);
+                transform.Rotate(-move, 0.0f, 0.0f);
             }
         }
     }

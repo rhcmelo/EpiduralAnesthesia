@@ -42,6 +42,8 @@ public class GameManager : MonoBehaviour {
 
     private bool visibilidadeInterna = false;
 
+    GameObject sideCamera;
+
     void Awake()
 	{
 		// Persistencia do objeto GameManager
@@ -631,30 +633,29 @@ public class GameManager : MonoBehaviour {
 
     public void PosicaoPaciente()
     {
+        Vector3 eixo = new Vector3(0, 0, 1);
+        Vector3 pontoCentral = camadas[0].GetComponent<Renderer>().bounds.center;
+
+        sideCamera  = GameObject.Find("Side Camera (Lateral View)");
+
         float rotacao = 90.0f;
         if(posicaoPaciente == Posicao.Sentada) // Alternar para posição em decúbito lateral esquerdo
         {
-            Vector3 pontoCentral = camadas[0].GetComponent<Renderer>().bounds.center;
-            Vector3 eixo = new Vector3(0, 0, 1);
-            for (int i = 0; i < camadas.Length; i++)
-                camadas[i].GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixo, rotacao);
-            spine.GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixo, rotacao);
-
             posicaoPaciente = Posicao.DeitadaEsquerda;
-
-            // Rodar a câmera lateral
         }
         else // (posicaoPaciente == Posicao.DeitadaEsquerda) // Alternar para posição sentada
         {
-            Vector3 pontoCentral = camadas[0].GetComponent<Renderer>().bounds.center;
-            Vector3 eixo = new Vector3(0, 0, 1);
-            for (int i = 0; i < camadas.Length; i++)
-                camadas[i].GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixo, -rotacao);
-            spine.GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixo, -rotacao);
-            posicaoPaciente = Posicao.Sentada;
+            rotacao = -rotacao;
 
-            // Rodar a câmera lateral
+            posicaoPaciente = Posicao.Sentada;
         }
+
+        for (int i = 0; i < camadas.Length; i++)
+            camadas[i].GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixo, rotacao);
+        spine.GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixo, rotacao);
+
+        // Rodar a câmera lateral
+        sideCamera.transform.RotateAround(pontoCentral, eixo, rotacao);
 
         RotateView.instancia.SendMessage("PosicionarPaciente");
 
