@@ -72,6 +72,16 @@ public class HapticInjection : HapticClassScript {
 		if (cpArquivo2 != null) cpArquivo2.Fechar ();
 	}
 
+    public void Init()
+    {
+        CleanUp();
+
+        myGenericFunctionsClassScript.SetHapticWorkSpace();
+        myGenericFunctionsClassScript.GetHapticWorkSpace();
+
+        myGenericFunctionsClassScript.SetHapticGeometry();
+    }
+
     void Start()
     {
         CleanUp();
@@ -160,7 +170,7 @@ public class HapticInjection : HapticClassScript {
         /***************************************************************/
         //Launch the Haptic Event for all different haptic objects
         /***************************************************************/
-        PluginImport.LaunchHapticEvent(); 
+        PluginImport.LaunchHapticEvent();
     }
 
     void Update()

@@ -3,21 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Timer : MonoBehaviour {
-
+public class Timer : MonoBehaviour
+{
     public Text timerText;
     private float startTime;
     private bool finished;
-	// Use this for initialization
-	void Start ()
+
+    void Init()
     {
         startTime = Time.time;
         finished = false;
-        timerText.color = Color.gray;
     }
-	
-	// Update is called once per frame
-	void Update ()
+    // Use this for initialization
+    void Start()
+    {
+        Init();
+    }
+
+    // Update is called once per frame
+    void Update()
     {
         if (finished)
             return;
@@ -43,11 +47,8 @@ public class Timer : MonoBehaviour {
         timerText.color = Color.red;
     }
 
-    void ReStart()
+    void Restart()
     {
-        startTime = Time.time;
-        finished = false;
-        timerText.color = Color.gray;
+        Init();
     }
-
 }
