@@ -16,7 +16,17 @@ public class GameSetup : MonoBehaviour {
 
     private List<GameObject> pickedObjects = new List<GameObject>();
 
-    public Button pacientePreparationButton;
+    public Button nextButton;
+
+    bool isRunning = true;
+
+    public bool IsRunning()
+    {
+        Debug.Log("GameSetup isRunning " + isRunning);
+
+        return isRunning;
+        
+    }
 
     //Awake is always called before any Start functions
     void Awake()
@@ -34,7 +44,7 @@ public class GameSetup : MonoBehaviour {
             Destroy(gameObject);
 
         //Sets this to not be destroyed when reloading scene
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
     }
 
     public void InitGame()
@@ -71,6 +81,8 @@ public class GameSetup : MonoBehaviour {
             resultText.text = "";
 
         gameResultOk = false;
+
+        isRunning = true;
     }
 
 	// Use this for initialization
@@ -87,7 +99,7 @@ public class GameSetup : MonoBehaviour {
             ChangeLevel();
         }*/
 
-        pacientePreparationButton.interactable = gameResultOk;
+        nextButton.interactable = gameResultOk;
     }
 
     public bool GetResultOk()
@@ -102,6 +114,8 @@ public class GameSetup : MonoBehaviour {
 
     public void Finish()
     {
+        isRunning = false;
+
         bool wrongOrder = false;
         for (int i = 0; i < pickedObjects.Count; i++)
         {
@@ -124,7 +138,7 @@ public class GameSetup : MonoBehaviour {
             {
                 if (orderPrevElement > pickedObjects[i].GetComponent<ChoiceOrder>().choiceOrder)
                 {
-                    message = "Atenção, você deve '" + pickedObjects[i].name + "' antes de '" + pickedObjects[i - 1].name + "'.";
+                    message = "Atenção, você deve '" + pickedObjects[i].name + "' antes de '" + pickedObjects[i - 1].name + "'.\nTente novamente!";
                     break;
                 }
                 orderPrevElement = pickedObjects[i].GetComponent<ChoiceOrder>().choiceOrder;
@@ -134,7 +148,7 @@ public class GameSetup : MonoBehaviour {
             else
                 resultText.text = message;
 
-            resultText.color = Color.red;
+            resultText.color = Color.white;
 
             gameResultOk = false;
         }
