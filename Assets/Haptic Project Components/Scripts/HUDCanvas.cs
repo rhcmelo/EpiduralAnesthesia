@@ -35,15 +35,18 @@ public class HUDCanvas : MonoBehaviour {
 	public Text txtPontosObjetivo;
 
 	// Use this for initialization
-	void Start () {
+	void Start ()
+    {
         goObjetivo.SetActive(false);
         txtPressaoSalina.text = "";
         pressaoSalina = 0;
     }
 
     // Update is called once per frame
-    void Update() {
-        if (GameManager.instancia.seringaPressao && GameManager.instancia.emboloSeringaPressao)
+    void Update()
+    {
+        if (GameManager.instancia && GameManager.instancia.seringaPressao && GameManager.instancia.emboloSeringaPressao ||
+            GameManagerLateral.instancia && GameManagerLateral.instancia.seringaPressao && GameManagerLateral.instancia.emboloSeringaPressao)
         { // Está pressionando o embolo da seringa (botao 1)
             string valor = pressaoSalina.ToString("f2");
             string strPressao = "Pressão Salina: " + valor;

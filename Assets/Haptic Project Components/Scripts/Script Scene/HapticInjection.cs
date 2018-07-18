@@ -44,6 +44,8 @@ public class HapticInjection : HapticClassScript {
 
 	// Verificando a angulação da agulha 
 	float angulo, anguloX, anguloY, anguloZ;
+
+    GameManager gameManagerRef;
     /*****************************************************************************/
 	
 	void Awake()
@@ -84,7 +86,11 @@ public class HapticInjection : HapticClassScript {
 
     void Start()
     {
-        CleanUp();
+        if (GameManager.instancia)
+            gameManagerRef = GameManager.instancia;
+        else
+            gameManagerRef = GameManagerLateral.instancia;
+        //CleanUp();
 
         ModeIndex = 3;
 
@@ -197,8 +203,8 @@ public class HapticInjection : HapticClassScript {
 		//Haptic Rendering Loop
 		/***************************************************************/
 		PluginImport.RenderHaptic ();
-		
-		myGenericFunctionsClassScript.GetProxyValues();
+        
+        myGenericFunctionsClassScript.GetProxyValues();
 		// teste posicao inclinacao agulha
 		//hapticCursor.transform.rotation = Quaternion.LookRotation(new Vector3(0.0f,-0.97f,-0.25f),new Vector3 (0.70f,-0.20f,-0.63f));
 
@@ -241,19 +247,6 @@ public class HapticInjection : HapticClassScript {
 			posDevice = ConverterClass.ConvertDouble3ToVector3(myDev);
 			GameObject.Find ("DeviceTipMarker").transform.position = posDevice;*/
 
-			// Obtendo o torque e convertendo para vector3
-			/*
-			double[] meuTorque = new double[3];
-			meuTorque = ConverterClass.ConvertIntPtrToDouble3(PluginImport.GetProxyTorque());
-			Vector3 vTorque = new Vector3();
-			vTorque = ConverterClass.ConvertDouble3ToVector3(meuTorque);
-
-			// Exibindo o torque na HUD2
-			cpHUD2.torque = vTorque;
-			*/
-
-
-
 			double[] myPinch = new double[3];
 			myPinch = ConverterClass.ConvertIntPtrToDouble3(PluginImport.GetPunctureDirection());
 
@@ -262,8 +255,7 @@ public class HapticInjection : HapticClassScript {
 			Vector3 end = new Vector3();
 			end = ConverterClass.ConvertDouble3ToVector3(myPinch);
 			end.Normalize();
-			//GameObject.Find ("DirecaoPerfuracao").transform.position = end;
-
+			
 			Debug.DrawLine(start,start+end * maxPenetration, Color.green);
 
 			//Ray Cast so we can determine the limitation of the puncture
@@ -273,12 +265,12 @@ public class HapticInjection : HapticClassScript {
 			// Verificando a angulação da agulha 
 			//calcularAngulacaoAgulha (out angulo, out anguloX, out anguloY, out anguloZ);
 			calcularAngulacaoAgulhaNormal (malhaNormal.mesh.normals[1], malhaNormal.gameObject.transform.position, out angulo, out anguloX, out anguloY, out anguloZ);
-			//Debug.Log (anguloX);
+            //Debug.Log (anguloX);
 
-			// Exibindo valores na interface do game
-			GameManager.instancia.AtualizarAngulacao(angulo, anguloX,anguloY, anguloZ);
-
-			if(hits.Length != 0)
+            // Exibindo valores na interface do game
+            gameManagerRef.AtualizarAngulacao(angulo, anguloX,anguloY, anguloZ);            
+            
+            if (hits.Length != 0)
 			{
 				//Declare a float array to store the tissue layer
 				float[] tissueLayers = new float[hits.Length];
@@ -316,34 +308,34 @@ public class HapticInjection : HapticClassScript {
 				// Se não identificou ainda a camada atual sendo perfurada, configurando a pele (Body) como camada atual (24/6)
 				if (colisorTecidoAtual == null) {
 					//colisorTecidoAtual = GameObject.Find ("Body").GetComponent<Collider>();
-					colisorTecidoAtual = GameManager.instancia.camadas[0].GetComponent<Collider>();
+					colisorTecidoAtual = gameManagerRef.camadas[0].GetComponent<Collider>();
 					profundidade_camada = 0;
 				}
 
 				// Verificando tarefas de jogo envolvendo seringa de pressao
-				if (GameManager.instancia.AnestesiaLocalRealizada() && GameManager.instancia.seringaPressao && GameManager.instancia.emboloSeringaPressao)
+				if (gameManagerRef.AnestesiaLocalRealizada() && gameManagerRef.seringaPressao && gameManagerRef.emboloSeringaPressao)
                 {
                     //if (cpHUD2.usandoSeringa && cpHUD2.apertandoEmbolo) {
                     bool bObjPlunger = false;
                     bool bObjPlungerISL = false;
-                    //for (int i = 0; i < GameManager.instancia.objetivos.Length; i++) {
-                    for (int i = 7; i < GameManager.instancia.objetivos.Length; i++) // rafael
+                    //for (int i = 0; i < gameManagerRef.objetivos.Length; i++) {
+                    for (int i = 7; i < gameManagerRef.objetivos.Length; i++) // rafael
                     {
 
                         // verificando se o objetivo pode ser pontuado
 
                         // seringa em qualquer tecido
-                        if (!GameManager.instancia.objetivos [i].realizado)
+                        if (!gameManagerRef.objetivos [i].realizado)
                         {
-                            if (GameManager.instancia.objetivos[i].id == "Plunger")
+                            if (gameManagerRef.objetivos[i].id == "Plunger")
                             {
-                                GameManager.instancia.AtualizarObjetivo(i);
+                                gameManagerRef.AtualizarObjetivo(i);
                                 bObjPlunger = true;
                             }
                             // Seringa no ISL
-                            else if (GameManager.instancia.objetivos[i].id == "PlungerISL" && colisorTecidoAtual.name == "InterspinousLigament")
+                            else if (gameManagerRef.objetivos[i].id == "PlungerISL" && colisorTecidoAtual.name == "InterspinousLigament")
                             {
-                                GameManager.instancia.AtualizarObjetivo(i);
+                                gameManagerRef.AtualizarObjetivo(i);
                                 bObjPlungerISL = true;
                             }
 
@@ -355,28 +347,28 @@ public class HapticInjection : HapticClassScript {
 				}
 
 				// Verificando tarefas de jogo envolvendo seringa de anestesia
-                for (int i = GameManager.instancia.objetivos.Length-1; i >= 0; i--)
-                //for (int i = 0; i < GameManager.instancia.objetivos.Length; i++)
+                for (int i = gameManagerRef.objetivos.Length-1; i >= 0; i--)
+                //for (int i = 0; i < gameManagerRef.objetivos.Length; i++)
                 {
-                    if (GameManager.instancia.seringaAnestesia && PluginImport.GetButton1State())
+                    if (gameManagerRef.seringaAnestesia && PluginImport.GetButton1State())
                     {
                         // verificando se o objetivo pode ser pontuado
 
                         // seringa de anestesia em qualquer tecido
-                        if (!GameManager.instancia.objetivos[i].realizado && GameManager.instancia.objetivos[i].id == "Anestesia")
+                        if (!gameManagerRef.objetivos[i].realizado && gameManagerRef.objetivos[i].id == "Anestesia")
                         {
-                            GameManager.instancia.AtualizarObjetivo(i);
+                            gameManagerRef.AtualizarObjetivo(i);
                             break; // rafael
                         }
                     }
-                    else if (!GameManager.instancia.seringaAnestesia)
+                    else if (!gameManagerRef.seringaAnestesia)
                     {
                         // verificando se o objetivo pode ser pontuado
 
                         // seringa de anestesia em qualquer tecido
-                        if (!GameManager.instancia.objetivos[i].realizado && !GameManager.instancia.AnestesiaLocalRealizada() && GameManager.instancia.objetivos[i].id == "SemAnestesia")
+                        if (!gameManagerRef.objetivos[i].realizado && !gameManagerRef.AnestesiaLocalRealizada() && gameManagerRef.objetivos[i].id == "SemAnestesia")
                         {
-                            GameManager.instancia.AtualizarObjetivo(i);
+                            gameManagerRef.AtualizarObjetivo(i);
                             break; // rafael
                         }
                     }
@@ -389,12 +381,12 @@ public class HapticInjection : HapticClassScript {
 					//Debug.Log(i + ":" + hits[i].collider.name + ":" + hits[i].distance + " > " + profundidade);
 
 					// Percorrendo os objetivos do jogo
-					if (GameManager.instancia.AnestesiaLocalRealizada() && GameManager.instancia.agulhaEpidural) {
-                        for (int i = 0; i < GameManager.instancia.objetivos.Length; i++)
+					if (gameManagerRef.AnestesiaLocalRealizada() && gameManagerRef.agulhaEpidural) {
+                        for (int i = 0; i < gameManagerRef.objetivos.Length; i++)
                         {
                             // verificando se o objetivo pode ser pontuado
-                            if (!GameManager.instancia.objetivos [i].realizado && colisorTecidoAtual.name.StartsWith(GameManager.instancia.objetivos [i].id) ) {
-								GameManager.instancia.AtualizarObjetivo(i);
+                            if (!gameManagerRef.objetivos [i].realizado && colisorTecidoAtual.name.StartsWith(gameManagerRef.objetivos [i].id) ) {
+                                gameManagerRef.AtualizarObjetivo(i);
                                 break; // rafael
 							}
 						}
@@ -422,15 +414,15 @@ public class HapticInjection : HapticClassScript {
 						myGenericFunctionsClassScript.myViscosityScript.magnitude = propriedadesOP.magnitudeViscosidade;
 						myGenericFunctionsClassScript.myViscosityScript.gain = propriedadesOP.ganhoViscosidade;
 						myGenericFunctionsClassScript.SetEnvironmentViscosity ();
-					//}
+                    //}
 
-					// Atualizando as forças hapticas exercidas de acordo com as propriedades do objeto perfurado
-					//myGenericFunctionsClassScript.AtualizarForcasHapticas(objectName);
-					//CopiarPropriedadesHapticas(objectName,GameManager.instancia.camadas[0].name);
+                    // Atualizando as forças hapticas exercidas de acordo com as propriedades do objeto perfurado
+                    //myGenericFunctionsClassScript.AtualizarForcasHapticas(objectName);
+                    //CopiarPropriedadesHapticas(objectName,gameManagerRef.camadas[0].name);
 
-					// Obtendo as propriedades do tecido (pressão kPa)
-					//Tecido propriedadesTecido = colisorTecidoAtual.gameObject.GetComponent<Tecido> ();
-					propriedadesTecido = colisorTecidoAtual.gameObject.GetComponent<Tecido> ();
+                    // Obtendo as propriedades do tecido (pressão kPa)
+                    //Tecido propriedadesTecido = colisorTecidoAtual.gameObject.GetComponent<Tecido> ();
+                    propriedadesTecido = colisorTecidoAtual.gameObject.GetComponent<Tecido> ();
 					cpHUD2.pressaoSalina = propriedadesTecido.kPaSalina;
 					cpHUD2.pressaoAr = propriedadesTecido.kPaAr;
 
@@ -615,16 +607,17 @@ public class HapticInjection : HapticClassScript {
         // atualizando as propriedades do objeto perfurado na HUD
     }
 
-	// Colocação/Retirada da Seringa
-	void AtualizaSeringaPressao()
-	{
-		// contando o tempo da ultima ação de troca da seringa
-		tempoUltimaTroca += Time.deltaTime;
+    // Colocação/Retirada da Seringa
+    void AtualizaSeringaPressao()
+    {
+        // contando o tempo da ultima ação de troca da seringa
+        tempoUltimaTroca += Time.deltaTime;
 
-		// Verificando se o botão 2 foi pressionado (uso/não uso da seringa)
-		if (PluginImport.GetButton2State () && tempoUltimaTroca > tempoTrocaSeringa) {
-			// Trocando seringa
-			tempoUltimaTroca = 0.0f;
+        // Verificando se o botão 2 foi pressionado (uso/não uso da seringa)
+        if (PluginImport.GetButton2State() && tempoUltimaTroca > tempoTrocaSeringa)
+        {
+            // Trocando seringa
+            tempoUltimaTroca = 0.0f;
             //cpHUD2.usandoSeringa = !cpHUD2.usandoSeringa;
 
             bool bEstaPerfurando = false;
@@ -633,16 +626,16 @@ public class HapticInjection : HapticClassScript {
                 bEstaPerfurando = true;
 
             // código anterior
-            //GameManager.instancia.UsarSeringaPressao();
+            //gameManagerRef.UsarSeringaPressao();
             // rafael para alternar entre equipamentos com o segundo botão
-            if ((!bEstaPerfurando && GameManager.instancia.seringaAnestesia) || (bEstaPerfurando && GameManager.instancia.seringaPressao))
-                GameManager.instancia.UsarAgulhaEpidural();
-            else if (GameManager.instancia.agulhaEpidural && !GameManager.instancia.seringaPressao)
-                GameManager.instancia.UsarSeringaPressao();
-            else if (!bEstaPerfurando && GameManager.instancia.agulhaEpidural && GameManager.instancia.seringaPressao)
-                GameManager.instancia.UsarDedo();
+            if ((!bEstaPerfurando && gameManagerRef.seringaAnestesia) || (bEstaPerfurando && gameManagerRef.seringaPressao))
+                gameManagerRef.UsarAgulhaEpidural();
+            else if (gameManagerRef.agulhaEpidural && !gameManagerRef.seringaPressao)
+                gameManagerRef.UsarSeringaPressao();
+            else if (!bEstaPerfurando && gameManagerRef.agulhaEpidural && gameManagerRef.seringaPressao)
+                gameManagerRef.UsarDedo();
             else
-                GameManager.instancia.UsarSeringaAnestesia();
+                gameManagerRef.UsarSeringaAnestesia();
 
             /*
 			// Colocou a seringa na agulha tuohy
@@ -657,17 +650,19 @@ public class HapticInjection : HapticClassScript {
 			*/
         }
 
-		// Verificando se o botão 1 está sendo pressionado (dedão no embolo da seringa)
-		if (GameManager.instancia.seringaPressao && PluginImport.GetButton1State ()) {
-		//if (cpHUD2.usandoSeringa && PluginImport.GetButton1State ()) {
-			GameManager.instancia.emboloSeringaPressao = true;
-			//cpHUD2.apertandoEmbolo = true;
-		} 
-		else {
-			GameManager.instancia.emboloSeringaPressao = false;
-			//cpHUD2.apertandoEmbolo = false;
-		}
-	}
+        // Verificando se o botão 1 está sendo pressionado (dedão no embolo da seringa)
+        if (gameManagerRef.seringaPressao && PluginImport.GetButton1State())
+        {
+            //if (cpHUD2.usandoSeringa && PluginImport.GetButton1State ()) {
+            gameManagerRef.emboloSeringaPressao = true;
+            //cpHUD2.apertandoEmbolo = true;
+        }
+        else
+        {
+            gameManagerRef.emboloSeringaPressao = false;
+            //cpHUD2.apertandoEmbolo = false;
+        }
+    }
 
     // rafael
     void AtualizaProfundidadePerfuracao()
@@ -675,7 +670,7 @@ public class HapticInjection : HapticClassScript {
         bool bMudouProfundidade = false;
 
         // dependendo da ferramenta ativa deve-se mudar a profunidade máxima de perfuração
-        if (GameManager.instancia.seringaAnestesia)
+        if (gameManagerRef.seringaAnestesia)
         {
             if (maxPenetration != 0.6f)
                 bMudouProfundidade = true;

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
 	public GameObject[] camadas;
@@ -30,10 +31,6 @@ public class GameManager : MonoBehaviour {
     public bool dedo;
     //public bool emboloSeringaAnestesia;
 
-    public enum Posicao { Sentada, DeitadaEsquerda };
-
-    public Posicao posicaoPaciente = Posicao.Sentada;
-
     // Perfil de propriedades dos tecidos
     public int codigoPerfilPropriedadesTecidos; // código do perfil
 	public string nomeArquivoPropriedadesTecidos; // nome do arquivo texto de propriedades
@@ -42,8 +39,6 @@ public class GameManager : MonoBehaviour {
     public Shader shaderTexture;
 
     private bool visibilidadeInterna = false;
-
-    private Vector3 pontoCentral;
 
     GameObject sideCamera;
 
@@ -55,16 +50,14 @@ public class GameManager : MonoBehaviour {
 		else if (instancia != this)
 			Destroy (gameObject);
 
-		DontDestroyOnLoad (gameObject);
+		//DontDestroyOnLoad (gameObject);
 
         shaderTransparent = Shader.Find("Legacy Shaders/Transparent/Diffuse");
         shaderTexture = Shader.Find("Unlit/Texture");
     }
 
     // Use this for initialization
-    void Start () {
-
-        pontoCentral = camadas[0].GetComponent<Renderer>().bounds.center;
+    void Start () {        
 
         InicializaJogo();
 
@@ -104,7 +97,7 @@ public class GameManager : MonoBehaviour {
     {
         DadosPaciente();
 
-        HUDJogo.GetComponent<HUDCanvas>().AtualizarDadosPaciente(objPaciente.altura, objPaciente.peso, objPaciente.idade);
+        GameObject.Find("HUDCanvas").GetComponent<HUDCanvas>().AtualizarDadosPaciente(objPaciente.altura, objPaciente.peso, objPaciente.idade);
 
         PosicionarCamadas();
 
@@ -116,7 +109,7 @@ public class GameManager : MonoBehaviour {
         // Carregando as propriedades dos tecidos
         CarregarPropriedadesTecidos(codigoPerfilPropriedadesTecidos);
 
-        HUDJogo.GetComponent<HUDCanvas>().goObjetivo.SetActive(false);
+        GameObject.Find("HUDCanvas").GetComponent<HUDCanvas>().goObjetivo.SetActive(false);
 
         setVisibilidadeInterna(false);
 
@@ -176,7 +169,7 @@ public class GameManager : MonoBehaviour {
 
     public void ExibirObjetivo(int id)
 	{
-		HUDJogo.GetComponent<HUDCanvas> ().ExibirObjetivo (id);
+        GameObject.Find("HUDCanvas").GetComponent<HUDCanvas> ().ExibirObjetivo (id);
 	}
 
     public void AtualizarObjetivo(int i)
@@ -186,7 +179,7 @@ public class GameManager : MonoBehaviour {
         // Atualizando a pontuação do jogo
         AdicionarPontuacao(objetivos[i].pontos);
 
-        HUDJogo.GetComponent<HUDCanvas>().AtualizarObjetivo(objetivos[i].descricao, objetivos[i].pontos.ToString() + " pontos!");
+        GameObject.Find("HUDCanvas").GetComponent<HUDCanvas>().AtualizarObjetivo(objetivos[i].descricao, objetivos[i].pontos.ToString() + " pontos!");
 
         ExibirObjetivo(i);
     }
@@ -195,7 +188,7 @@ public class GameManager : MonoBehaviour {
     {
         pontuacao = 0;
         objetivosCompletos = 0;
-        HUDJogo.GetComponent<HUDCanvas>().textoPontuacao.text = "Pontos: " + pontuacao;
+        GameObject.Find("HUDCanvas").GetComponent<HUDCanvas>().textoPontuacao.text = "Pontos: " + pontuacao;
     }
 
     public void AdicionarPontuacao(int valor)
@@ -203,44 +196,44 @@ public class GameManager : MonoBehaviour {
         if (valor > 0)
             objetivosCompletos++;
         pontuacao += valor;
-		HUDJogo.GetComponent<HUDCanvas> ().textoPontuacao.text = "Pontos: " + pontuacao + " (" + objetivosCompletos + " de " + quantidadeDeObjetivos + " objetivos completos)";
+        GameObject.Find("HUDCanvas").GetComponent<HUDCanvas> ().textoPontuacao.text = "Pontos: " + pontuacao + " (" + objetivosCompletos + " de " + quantidadeDeObjetivos + " objetivos completos)";
 
         if (objetivosCompletos == quantidadeDeObjetivos)
-            GameManager.instancia.SendMessage("Finnish");
+            SendMessage("Finnish");
 
     }
 
 	public void AtualizarAngulacao(float angulo, float anguloX, float anguloY, float anguloZ)
 	{
-		HUDJogo.GetComponent<HUDCanvas> ().textoAngulacao.text  = angulo.ToString("F1") + " graus";
-		HUDJogo.GetComponent<HUDCanvas> ().textoAngulacaoX.text  = anguloX.ToString("F1") + " graus";
-		HUDJogo.GetComponent<HUDCanvas> ().textoAngulacaoY.text  = anguloY.ToString("F1") + " graus";
-		HUDJogo.GetComponent<HUDCanvas> ().barraAngulacao.value = angulo;
-		HUDJogo.GetComponent<HUDCanvas> ().barraAngulacaoX.value = anguloX;
-		HUDJogo.GetComponent<HUDCanvas> ().barraAngulacaoY.value = anguloY;
+        GameObject.Find("HUDCanvas").GetComponent<HUDCanvas> ().textoAngulacao.text  = angulo.ToString("F1") + " graus";
+        GameObject.Find("HUDCanvas").GetComponent<HUDCanvas> ().textoAngulacaoX.text  = anguloX.ToString("F1") + " graus";
+        GameObject.Find("HUDCanvas").GetComponent<HUDCanvas> ().textoAngulacaoY.text  = anguloY.ToString("F1") + " graus";
+        GameObject.Find("HUDCanvas").GetComponent<HUDCanvas> ().barraAngulacao.value = angulo;
+        GameObject.Find("HUDCanvas").GetComponent<HUDCanvas> ().barraAngulacaoX.value = anguloX;
+        GameObject.Find("HUDCanvas").GetComponent<HUDCanvas> ().barraAngulacaoY.value = anguloY;
 
 
-		/*
+        /*
 		Color corVermelha = Color.red;
 		Color corVerde = Color.green;
 
 		// Feedback na cor da barra da angulação
 		if (anguloX > 15f) {
-			HUDJogo.GetComponent<HUDCanvas> ().barraAngulacaoX.colors.normalColor = corVermelha;
+			GameObject.Find("HUDCanvas").GetComponent<HUDCanvas> ().barraAngulacaoX.colors.normalColor = corVermelha;
 		} 
 		else if (anguloX <= 15f) {
-			HUDJogo.GetComponent<HUDCanvas> ().barraAngulacaoX.colors.normalColor = corVerde;
+			GameObject.Find("HUDCanvas").GetComponent<HUDCanvas> ().barraAngulacaoX.colors.normalColor = corVerde;
 		}
 
 		if (anguloY > 15f) {
-			HUDJogo.GetComponent<HUDCanvas> ().barraAngulacaoX.colors.normalColor = corVermelha;
+			GameObject.Find("HUDCanvas").GetComponent<HUDCanvas> ().barraAngulacaoX.colors.normalColor = corVermelha;
 		} 
 		else if (anguloY <= 15f) {
-			HUDJogo.GetComponent<HUDCanvas> ().barraAngulacaoX.colors.normalColor = corVerde;
+			GameObject.Find("HUDCanvas").GetComponent<HUDCanvas> ().barraAngulacaoX.colors.normalColor = corVerde;
 		}
 		*/
 
-	}
+    }
 
     // Update is called once per frame
     void Update()
@@ -263,7 +256,7 @@ public class GameManager : MonoBehaviour {
             if (PluginImport.GetPenetrationRatio() == 0)
                 InicializaJogo();
 
-            GameManager.instancia.SendMessage("ReStart");
+            SendMessage("ReStart");
         }
 
         if (Input.GetKeyDown(KeyCode.V)) // Alternar visualização de camadas
@@ -272,7 +265,14 @@ public class GameManager : MonoBehaviour {
         }
 
         if (Input.GetKeyDown(KeyCode.P)) // Alternar posição do paciente
-            PosicaoPaciente();
+        {
+            int sceneID = SceneManager.GetActiveScene().buildIndex;
+
+            if (sceneID == 3)
+                SceneManager.LoadScene(4);
+            else
+                SceneManager.LoadScene(3);
+        }            
 
     }
 
@@ -638,156 +638,5 @@ public class GameManager : MonoBehaviour {
     public Vector3 RotatePointAroundPivot(Vector3 point, Vector3 pivot, Vector3 angles)
     {
         return Quaternion.Euler(angles) * (point - pivot) + pivot;
-    }
-
-    public void PosicaoPaciente()
-    {
-        //Vector3 pontoCentral = camadas[0].GetComponent<Renderer>().bounds.center;
-
-        sideCamera  = GameObject.Find("Side Camera (Lateral View)");
-        GameObject needleTopBall = GameObject.Find("NeedleTopBall");
-        GameObject hapticCamera = GameObject.Find("Haptic Camera");
-        GameObject workspaceCube = GameObject.Find("Workspace Cube");
-
-        GameObject dummy = GameObject.Find("dummy");
-
-        Vector3 eixoZ = new Vector3(0, 0, 1);
-        float rotacaoZ = 90.0f;
-
-        Vector3 eixoY = new Vector3(0, 1, 0);
-        float rotacaoY = -21.0f;
-
-        if (posicaoPaciente == Posicao.Sentada) // Alternar para posição em decúbito lateral esquerdo
-        {
-            posicaoPaciente = Posicao.DeitadaEsquerda;
-
-            for (int i = 0; i < camadas.Length; i++)
-            {
-                camadas[i].GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
-                camadas[i].GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixoY, rotacaoY);
-            }
-            spine.GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
-            spine.GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixoY, rotacaoY);
-
-            // Rodar a câmera lateral
-            sideCamera.transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
-            sideCamera.transform.RotateAround(pontoCentral, eixoY, rotacaoY);
-
-            localizacaoPele.transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
-            localizacaoPele.transform.RotateAround(pontoCentral, eixoZ, rotacaoY);
-
-            dummy.GetComponent<HapticInjection>().myHapticCamera.transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
-            dummy.GetComponent<HapticInjection>().myHapticCamera.transform.RotateAround(pontoCentral, eixoY, rotacaoY);
-
-            dummy.GetComponent<HapticInjection>().workSpaceObj.transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
-            dummy.GetComponent<HapticInjection>().workSpaceObj.transform.RotateAround(pontoCentral, eixoY, rotacaoY);
-
-            dummy.GetComponent<HapticInjection>().hapticCursor.transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
-            dummy.GetComponent<HapticInjection>().hapticCursor.transform.RotateAround(pontoCentral, eixoY, rotacaoY);
-
-            localizacaoPele.transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
-            localizacaoPele.transform.RotateAround(pontoCentral, eixoY, rotacaoY);
-
-            /*goSeringaAnestesia.GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
-            goSeringaAnestesia.GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixoY, rotacaoY);
-            goAgulhaEpidural.GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
-            goAgulhaEpidural.GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixoY, rotacaoY);
-            goSeringaPressao.GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
-            goSeringaPressao.GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixoY, rotacaoY);
-            goDedo.GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
-            goDedo.GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixoY, rotacaoY);
-            */
-
-
-            //needleTopBall.transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
-            //needleTopBall.transform.RotateAround(pontoCentral, eixoY, rotacaoY);
-            //proxyTipMarker.transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
-            //proxyTipMarker.transform.RotateAround(pontoCentral, eixoY, rotacaoY);
-            //workspaceCube.transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
-            //workspaceCube.transform.RotateAround(pontoCentral, eixoY, rotacaoY);
-
-            /*
-            // Workspace position
-            Vector3 workspcPoint = new Vector3(dummy.GetComponent<HapticClassScript>().myWorkSpacePosition[0], dummy.GetComponent<HapticClassScript>().myWorkSpacePosition[1], dummy.GetComponent<HapticClassScript>().myWorkSpacePosition[2]);
-            Vector3 newWkspcPoint = RotatePointAroundPivot(workspcPoint, pontoCentral, new Vector3(0, 0, 90));
-            newWkspcPoint = RotatePointAroundPivot(workspcPoint, pontoCentral, new Vector3(0, -21, 0));
-            
-            dummy.GetComponent<HapticClassScript>().myWorkSpacePosition[0] = newWkspcPoint.x;
-            dummy.GetComponent<HapticClassScript>().myWorkSpacePosition[1] = newWkspcPoint.y;
-            dummy.GetComponent<HapticClassScript>().myWorkSpacePosition[2] = newWkspcPoint.z;
-
-            dummy.GetComponent<GenericFunctionsClass>().SetHapticWorkSpace();
-            dummy.GetComponent<GenericFunctionsClass>().GetHapticWorkSpace();
-            */
-            //PluginImport.UpdateWorkspace(dummy.GetComponent<HapticClassScript>().myHapticCamera.transform.rotation.eulerAngles.y);
-
-
-        }
-        else // (posicaoPaciente == Posicao.DeitadaEsquerda) // Alternar para posição sentada
-        {
-            rotacaoZ = -rotacaoZ;
-            rotacaoY = -rotacaoY;
-
-            posicaoPaciente = Posicao.Sentada;
-
-            for (int i = 0; i < camadas.Length; i++)
-            {
-                camadas[i].GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixoY, rotacaoY);
-                camadas[i].GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
-            }
-            spine.GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixoY, rotacaoY);
-            spine.GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
-
-            // Rodar a câmera lateral
-            sideCamera.transform.RotateAround(pontoCentral, eixoY, rotacaoY);
-            sideCamera.transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
-
-            localizacaoPele.transform.RotateAround(pontoCentral, eixoZ, rotacaoY);
-            localizacaoPele.transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
-
-            dummy.GetComponent<HapticInjection>().myHapticCamera.transform.RotateAround(pontoCentral, eixoY, rotacaoY);
-            dummy.GetComponent<HapticInjection>().myHapticCamera.transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
-
-            dummy.GetComponent<HapticInjection>().workSpaceObj.transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
-            dummy.GetComponent<HapticInjection>().workSpaceObj.transform.RotateAround(pontoCentral, eixoY, rotacaoY);
-
-            dummy.GetComponent<HapticInjection>().hapticCursor.transform.RotateAround(pontoCentral, eixoY, rotacaoY);
-            dummy.GetComponent<HapticInjection>().hapticCursor.transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
-
-            localizacaoPele.transform.RotateAround(pontoCentral, eixoY, rotacaoY);
-            localizacaoPele.transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
-
-            /*goSeringaAnestesia.GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixoY, rotacaoY);
-            goSeringaAnestesia.GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
-            goAgulhaEpidural.GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixoY, rotacaoY);
-            goAgulhaEpidural.GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
-            goSeringaPressao.GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixoY, rotacaoY);
-            goSeringaPressao.GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
-            goDedo.GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixoY, rotacaoY);
-            goDedo.GetComponent<Renderer>().transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
-            */
-
-            //needleTopBall.transform.RotateAround(pontoCentral, eixoY, rotacaoY);
-            //needleTopBall.transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
-            //proxyTipMarker.transform.RotateAround(pontoCentral, eixoY, rotacaoY);
-            //proxyTipMarker.transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
-            //workspaceCube.transform.RotateAround(pontoCentral, eixoY, rotacaoY);
-            //workspaceCube.transform.RotateAround(pontoCentral, eixoZ, rotacaoZ);
-
-            /*
-            // Workspace position
-            dummy.GetComponent<HapticClassScript>().myWorkSpacePosition[0] = 0;// newWkspcPoint.x;
-            dummy.GetComponent<HapticClassScript>().myWorkSpacePosition[1] = 0;// newWkspcPoint.y;
-            dummy.GetComponent<HapticClassScript>().myWorkSpacePosition[2] = 0;// newWkspcPoint.z;
-
-            dummy.GetComponent<GenericFunctionsClass>().SetHapticWorkSpace();
-            dummy.GetComponent<GenericFunctionsClass>().GetHapticWorkSpace();
-            */
-            //PluginImport.UpdateWorkspace(dummy.GetComponent<HapticClassScript>().myHapticCamera.transform.rotation.eulerAngles.y);
-            //dummy.GetComponent<GenericFunctionsClass>().UpdateHapticObjectMatrixTransform();
-
-        }
-        //dummy.GetComponent<HapticInjection>().Init();
-        RotateView.instancia.SendMessage("PosicionarPaciente");
-    }
+    }   
 }

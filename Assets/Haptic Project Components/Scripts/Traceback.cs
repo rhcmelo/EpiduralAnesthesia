@@ -21,7 +21,10 @@ public class Traceback : MonoBehaviour {
 		proximoDestino = new Vector3 ();
 		direcaoRotacao = new Vector3 ();
 		torqueRotacao = new Vector3 ();
-	}
+
+        //objeto = GameObject.Find("PontaAgulha");
+        //waypoint = GameObject.Find("WayPoint");
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -68,7 +71,7 @@ public class Traceback : MonoBehaviour {
 
 			// Movimentando até o próximo destino
 			if (!chegou && !cpArquivo.FimArquivo ()) {
-				objeto.transform.position -= direcaoDestino.normalized * Time.deltaTime;
+                objeto.transform.position -= direcaoDestino.normalized * Time.deltaTime;
 
 				if (Vector3.Distance (objeto.transform.position, proximoDestino) < 0.02f) {
 					chegou = true;

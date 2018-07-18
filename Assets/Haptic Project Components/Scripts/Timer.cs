@@ -10,7 +10,8 @@ public class Timer : MonoBehaviour
     private bool finished;
 
     void Init()
-    {
+    {        
+        timerText = GameObject.Find("TimerText").GetComponent<Text>();
         startTime = Time.time;
         finished = false;
     }
@@ -25,6 +26,9 @@ public class Timer : MonoBehaviour
     {
         if (finished)
             return;
+
+        if(timerText == null)
+            timerText = GameObject.Find("TimerText").GetComponent<Text>();
 
         float t = Time.time - startTime;
 

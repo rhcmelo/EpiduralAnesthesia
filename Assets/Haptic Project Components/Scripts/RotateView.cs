@@ -5,21 +5,12 @@ using System.Collections.Generic;
 
 public class RotateView : MonoBehaviour {
 
-    public static RotateView instancia = null;
-
     Vector3 angulosPosicaoSentada;
     Vector3 angulosPosicaoDeitadaEsquerda;
 
-    void Awake()
-    {
-        // Persistencia do objeto GameManager
-        if (instancia == null)
-            instancia = this;
-        else if (instancia != this)
-            Destroy(gameObject);
+    public enum Posicao { Sentada, DeitadaEsquerda };
 
-        DontDestroyOnLoad(gameObject);
-    }
+    public Posicao posicaoPaciente;
 
     // Use this for initialization
     void Start () {
@@ -36,7 +27,7 @@ public class RotateView : MonoBehaviour {
         float x = transform.eulerAngles.x;
         float y = transform.eulerAngles.y;
         
-        if (GameManager.instancia.posicaoPaciente == GameManager.Posicao.Sentada)
+        if (posicaoPaciente == Posicao.Sentada)
         {
             if (Input.GetKey(KeyCode.RightArrow) && ((y < 50) || (y > 320)))
             {
@@ -51,7 +42,7 @@ public class RotateView : MonoBehaviour {
                 transform.Rotate(0.0f, move, 0.0f);
             }
         }
-        else //if (GameManager.instancia.posicaoPaciente == GameManager.Posicao.DeitadaEsquerda)
+        else //if (posicaoPaciente == Posicao.DeitadaEsquerda)
         {
             if (Input.GetKey(KeyCode.RightArrow) && ((x < 40) || (x > 310)))
             {
@@ -66,14 +57,5 @@ public class RotateView : MonoBehaviour {
                 transform.Rotate(-move, 0.0f, 0.0f);
             }
         }
-    }
-
-    public void PosicionarPaciente()
-    {
-        Debug.Log("Angulos x,y: " + transform.eulerAngles.x.ToString() + " , " + transform.eulerAngles.y.ToString());
-        if (GameManager.instancia.posicaoPaciente == GameManager.Posicao.Sentada)
-            transform.eulerAngles = angulosPosicaoSentada;
-        else
-            transform.eulerAngles = angulosPosicaoDeitadaEsquerda;
     }
 }
